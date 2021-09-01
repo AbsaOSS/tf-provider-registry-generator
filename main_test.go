@@ -1,24 +1,25 @@
 package main
 
 import (
-	"testing"
-	"os"
 	"encoding/json"
+	"github.com/k0da/tfreg-golang/terraform"
 	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 )
 
 const fileName = "terraform-provider-dummy_1.2.5_linux_amd64.zip"
-var platform = Platform{ Os: "linux", Arch: "amd64"}
-var expectedProvider = &Provider{
+var platform = terraform.Platform{ Os: "linux", Arch: "amd64"}
+var expectedProvider = &terraform.TerraformProvider{
 		Name: "dummy",
 		Version: "1.2.5",
 		Files: []string{fileName},
-		Platforms: []Platform{platform},
+		Platforms: []terraform.Platform{platform},
 	}
 
 func TestProviderParsing(t *testing.T) {
 	provider := parseProvider(fileName)
-	provider.updatePlatform(getOs(fileName), getArch(fileName))
+	provider.UpdatePlatform(getOs(fileName), getArch(fileName))
 	gotName := provider.Name
 	gotVer := provider.Version
 	assert.Equal(t, expectedProvider.Name, gotName, "expected %s, but got: %s", expectedProvider.Name, gotName)
@@ -27,9 +28,9 @@ func TestProviderParsing(t *testing.T) {
 }
 
 func TestVersionFromProvider(t *testing.T){
-	versions := Versions{}
-	expVersions := Versions{}
-	version := expectedProvider.generateVersion()
+	versions := terraform.Versions{}
+	expVersions := terraform.Versions{}
+	version := expectedProvider.GenerateVersion()
 	existing, _ := os.ReadFile("./fixtures/existing.json")
 	expected, _ := os.ReadFile("./fixtures/expected.json")
 	err := json.Unmarshal(existing, &versions)

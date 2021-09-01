@@ -2,57 +2,14 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
+	pather "github.com/k0da/tfreg-golang/path"
+	"github.com/k0da/tfreg-golang/terraform"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
 )
-
-type Download struct {
-	Protocols           []string `json:"protocols"`
-	Os                  string   `json:"os"`
-	Arch                string   `json:"arch"`
-	Filename            string   `json:"filename"`
-	DownloadURL         string   `json:"download_url"`
-	ShasumsURL          string   `json:"shasums_url"`
-	ShasumsSignatureURL string   `json:"shasums_signature_url"`
-	Shasum              string   `json:"shasum"`
-	SigningKeys         struct {
-		GpgPublicKeys []struct {
-			KeyID          string `json:"key_id"`
-			ASCIIArmor     string `json:"ascii_armor"`
-			TrustSignature string `json:"trust_signature"`
-			Source         string `json:"source"`
-			SourceURL      string `json:"source_url"`
-		} `json:"gpg_public_keys"`
-	} `json:"signing_keys"`
-}
-
-type Versions struct {
-	Versions []Version `json:"versions"`
-}
-type Version struct {
-	Version   string     `json:"version"`
-	Protocols []string   `json:"protocols"`
-	Platforms []Platform `json:"platforms"`
-}
-
-type Platform struct {
-	Os   string `json:"os"`
-	Arch string `json:"arch"`
-}
-
-type Provider struct {
-	Name string
-	Namespace string
-	Version string
-	Files []string
-	Platforms []Platform
-}
-
-const TFProtocol = "5.2"
 
 var path = "pages/" + os.Getenv("TARGET_DIR")
 
@@ -111,55 +68,17 @@ func getNameDir(name string) string {
 	return path + "/" + os.Getenv("NAMESPACE") + "/" + name
 }
 
-func getDownloadDir(p *Provider) string{
-	return getNameDir(p.Name)+"/"+p.Version+"/download"
-}
-
-func parseProvider(file string) *Provider{
+func parseProvider(file string) *terraform.TerraformProvider{
 	prov := getProvider(file)
-	p := new(Provider)
+	p := new(terraform.TerraformProvider)
 	p.Files = append(p.Files, file)
 	p.Name = getProviderName(prov)
 	p.Version = getVersion(prov)
 	return p
 }
 
-func (p *Provider) updatePlatform(os, arch string) *Provider {
-	platform := Platform{Os: os, Arch: arch}
-	p.Platforms = append(p.Platforms, platform)
-	return p
-}
-
-func (p *Provider) generateArchs() {
-	d := Download{}
-	for _, platform := range p.Platforms {
-		d.Os = platform.Os
-		d.Arch = platform.Arch
-	}
-}
-
-func(p *Provider) generateVersion() *Version{
-	version := &Version{}
-	version.Protocols = []string{TFProtocol}
-	version.Version = p.Version
-	version.Platforms = p.Platforms
-	return version
-}
-
-func prepareDownloadDir(p *Provider) error {
-	// create pages/$NAMESPACE/$name/$version/download/
-	return os.MkdirAll(getDownloadDir(p), 0755)
-}
-
-func newProvider(name string) *Provider {
-	p := new(Provider)
-	p.Name = name
-	return p
-}
-
 func provider() {
-	versions := Versions{}
-	var provider *Provider
+	var provider *terraform.TerraformProvider
 	files, err := os.ReadDir(path + "/" + os.Getenv("ARTIFACTS_DIR"))
 	checkError(err)
 
@@ -168,22 +87,20 @@ func provider() {
 		if strings.Contains(f.Name(), ".zip") {
 			file := f.Name()
 			provider = parseProvider(file)
-			provider.updatePlatform(getOs(file), getArch(file))
+			provider.UpdatePlatform(getOs(file), getArch(file))
 		}
 	}
-	provider.generateArchs()
-	err = prepareDownloadDir(provider)
+	provider.GenerateArchs()
+
+	pather,err := pather.NewPathProvider("pages", provider)
 	checkError(err)
-	version := provider.generateVersion()
-	versionsPath := getVersionsPath(provider.Name)
-	data, err := os.ReadFile(versionsPath)
+	_, err = pather.CreateDownloadDirectory()
 	checkError(err)
-	err = json.Unmarshal(data, &versions)
+	versions, err := pather.GetVersions()
 	checkError(err)
-	// append existing versions
+	version := provider.GenerateVersion()
 	versions.Versions = append(versions.Versions, *version)
-	data, err = json.Marshal(versions)
-	err = os.WriteFile(versionsPath, data, 0644)
+	pather.WriteVersions(versions)
 	checkError(err)
 
 }
