@@ -1,54 +1,22 @@
 package terraform
 
 import (
+	"crypto/sha256"
 	"fmt"
+	"github.com/k0da/tfreg-golang/internal/config"
 	"os"
 	"strings"
-
-	"github.com/k0da/tfreg-golang/internal/config"
 )
-
-type Download struct {
-	Protocols           []string `json:"protocols"`
-	Os                  string   `json:"os"`
-	Arch                string   `json:"arch"`
-	Filename            string   `json:"filename"`
-	DownloadURL         string   `json:"download_url"`
-	ShasumsURL          string   `json:"shasums_url"`
-	ShasumsSignatureURL string   `json:"shasums_signature_url"`
-	Shasum              string   `json:"shasum"`
-	SigningKeys         struct {
-		GpgPublicKeys []struct {
-			KeyID          string `json:"key_id"`
-			ASCIIArmor     string `json:"ascii_armor"`
-			TrustSignature string `json:"trust_signature"`
-			Source         string `json:"source"`
-			SourceURL      string `json:"source_url"`
-		} `json:"gpg_public_keys"`
-	} `json:"signing_keys"`
-}
-
-type Versions struct {
-	Versions []Version `json:"versions"`
-}
-type Version struct {
-	Version   string     `json:"version"`
-	Protocols []string   `json:"protocols"`
-	Platforms []Platform `json:"platforms"`
-}
-
-type Platform struct {
-	Os       string `json:"os"`
-	Arch     string `json:"arch"`
-	fileName string
-}
+const protocolVersion = "5.2"
 
 type TerraformProvider struct {
-	Name      string
-	Namespace string
+	name      string
 	Version   string
 	Platforms []Platform
+	path         *Path
+	fileProvider Filer
 }
+
 
 type providerInfo struct {
 	Name    string
@@ -58,29 +26,7 @@ type providerInfo struct {
 	file    string
 }
 
-
-func (p *TerraformProvider) GenerateDownloadInfo() (err error) {
-	d := Download{}
-	for _, platform := range p.Platforms {
-		d.Os = platform.Os
-		d.Arch = platform.Arch
-	}
-	// todo:
-	return
-}
-
-func (p *TerraformProvider) GenerateVersion() *Version {
-	const protocolVersion = "5.2"
-	version := &Version{}
-	version.Protocols = []string{protocolVersion}
-	version.Version = p.Version
-	for _, platform := range p.Platforms {
-		version.Platforms = append(version.Platforms, Platform{Os: platform.Os, Arch: platform.Arch})
-	}
-	return version
-}
-
-func NewProvider(c config.Config) (p *TerraformProvider, err error) {
+func NewProvider(c config.Config, fp Filer) (p *TerraformProvider, err error) {
 	var files []os.DirEntry
 	files, err = os.ReadDir(c.ArtifactDir)
 	if err != nil {
@@ -99,7 +45,11 @@ func NewProvider(c config.Config) (p *TerraformProvider, err error) {
 		return
 	}
 	p = new(TerraformProvider)
-	p.Name = pis[0].Name
+	p.path, err = NewPath(p,c)
+	if err != nil {
+		return
+	}
+	p.name = pis[0].Name
 	p.Version = pis[0].version
 	for _, pi := range pis {
 		p.Platforms = append(p.Platforms, Platform{
@@ -108,8 +58,47 @@ func NewProvider(c config.Config) (p *TerraformProvider, err error) {
 			fileName: pi.file,
 		})
 	}
+	if fp == nil {
+		err = fmt.Errorf("nil file provider")
+		return
+	}
+	p.fileProvider = fp
 	return
 }
+
+func (p *TerraformProvider) GenerateDownloadInfo() (err error) {
+	const url = "https://media.githubusercontent.com/media/downloads/"
+	var path string
+	for _, platform := range p.Platforms {
+		d := Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.fileName}
+		d.DownloadURL = url+platform.fileName
+		d.Protocols = []string{protocolVersion}
+		d.Shasum, err = getSHA256(p.path.Artifacts() + "/" + platform.fileName)
+		if err != nil {
+			return err
+		}
+		d.ShasumsSignatureURL = url + "terraform-provider-"+p.name+"_"+p.Version+"_SHA256SUMS.sig"
+		d.ShasumsURL = url + "terraform-provider-"+p.name+"_"+p.Version+"_SHA256SUMS"
+		// todo: d.SigningKeys = resolve keys
+		path, err = p.fileProvider.CreatePlatformMetadata(d)
+		if err != nil {
+			err = fmt.Errorf("error writing metadata %s, %s", path, err)
+			return
+		}
+	}
+	return
+}
+
+func (p *TerraformProvider) GenerateVersion() *Version {
+	version := &Version{}
+	version.Protocols = []string{protocolVersion}
+	version.Version = p.Version
+	for _, platform := range p.Platforms {
+		version.Platforms = append(version.Platforms, Platform{Os: platform.Os, Arch: platform.Arch})
+	}
+	return version
+}
+
 
 // makes list of providerInfo from files in the path
 func parseProviders(files []os.DirEntry) (pis []providerInfo, err error) {
@@ -147,4 +136,14 @@ func getProviderInfo(fileName string) (i providerInfo, err error) {
 	i.arch = fileParts[3]
 	i.file = fileName
 	return
+}
+
+
+func getSHA256(path string) (string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	sum := sha256.Sum256(data)
+	return fmt.Sprintf("%x", sum[:]), err
 }

@@ -47,6 +47,9 @@ func provider() {
 	err = provider.GenerateDownloadInfo()
 	checkError(err)
 
+	terraform.NewPath()
+	f := terraform.NewFileProvider()
+
 	pather, err := pather.NewDirProvider(config, provider)
 	checkError(err)
 	_, err = pather.CreateDownloadDirectory()

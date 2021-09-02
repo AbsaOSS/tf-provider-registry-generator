@@ -23,13 +23,12 @@ func NewPath(provider *TerraformProvider, config config.Config) (p *Path, err er
 	return
 }
 
-// todo: create class which read config and returns bunch of paths
 func (p *Path) Root() string {
 	return p.config.Base
 }
 
 func (p *Path) providerRoot() string {
-	return p.Root() + "/" + p.provider.Namespace + "/" + p.provider.Name
+	return p.Root() + "/" + p.config.Namespace + "/" + p.provider.name
 }
 
 func (p *Path) Artifacts() string {

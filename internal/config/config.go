@@ -13,6 +13,7 @@ type Config struct {
 	Branch      string
 	WebRoot     string
 	Base        string
+	GPGKeyID	string
 }
 
 func NewConfig(base string) (c Config, err error) {
@@ -35,6 +36,7 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty %s", namespace)
 		return
 	}
+	// TODO: read GPG_KEY_ID
 	if base == "" {
 		err = fmt.Errorf("empty base")
 		return
