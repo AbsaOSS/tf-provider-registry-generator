@@ -14,7 +14,8 @@
       "version": "1.2.5",
       "protocols": ["5.2"],
       "platforms": [
-        {"os": "linux", "arch": "amd64"}
+        {"os": "linux", "arch": "amd64"},
+        {"os": "linux", "arch": "arm64"}
       ]
     }
   ]
