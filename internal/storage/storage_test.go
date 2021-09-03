@@ -1,19 +1,21 @@
-package terraform
+package storage
 
 import (
+	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 )
 
-var linuxAmd64Download = Download{
+var linuxAmd64Download = terraform.Download{
 	Os: "linux",
 	Arch: "amd64",
 }
 
-func getDefaultPath() *Path{
-	p, _ := NewPath(expectedProvider,defaultConfig)
+func getDefaultPath() *path.Path{
+	p, _ := path.NewPath(defaultConfig)
 	return p
 }
 

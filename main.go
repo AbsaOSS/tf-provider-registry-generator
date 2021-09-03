@@ -7,8 +7,8 @@ import (
 	"os"
 	"os/exec"
 
-	config2 "github.com/k0da/tfreg-golang/internal/config"
-	pather "github.com/k0da/tfreg-golang/internal/dir"
+	"github.com/k0da/tfreg-golang/internal/config"
+	pather "github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/terraform"
 )
 
@@ -40,25 +40,21 @@ func clone() {
 
 func provider() {
 
-	config, err := config2.NewConfig("pages")
+	// init
+	config, err := config.NewConfig("pages")
 	checkError(err)
-	provider, err := terraform.NewProvider(config)
+	path, err := pather.NewPath(config)
+	checkError(err)
+	file, err := terraform.NewFileProvider(path)
+	checkError(err)
+	provider, err := terraform.NewProvider(path,file)
 	checkError(err)
 	err = provider.GenerateDownloadInfo()
 	checkError(err)
 
-	terraform.NewPath()
-	f := terraform.NewFileProvider()
-
-	pather, err := pather.NewDirProvider(config, provider)
-	checkError(err)
-	_, err = pather.CreateDownloadDirectory()
-	checkError(err)
-	versions, err := pather.GetVersions()
-	checkError(err)
-	version := provider.GenerateVersion()
-	versions.Versions = append(versions.Versions, *version)
-	pather.WriteVersions(versions)
+	_ = provider.GenerateVersion()
+	//versions.Versions = append(versions.Versions, *version)
+	//pather.WriteVersions(versions)
 	checkError(err)
 
 }
@@ -99,7 +95,7 @@ func main() {
 	//	if err != nil {
 	//		fmt.Printf("Error %s", err.Error())
 	//	}
-	//	fmt.Printf("Versions %+v", v.Versions)
+	//	fmt.Printf("VersionsPath %+v", v.VersionsPath)
 	//	fmt.Println("\n")
 	//	fmt.Printf("Download %+v", d)
 }

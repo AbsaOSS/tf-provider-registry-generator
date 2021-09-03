@@ -3,6 +3,7 @@ package terraform
 import (
 	"encoding/json"
 	"github.com/k0da/tfreg-golang/internal/config"
+	"github.com/k0da/tfreg-golang/internal/path"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
@@ -17,9 +18,8 @@ const (
 var platformAmd64 = Platform{Os: "linux", Arch: "amd64", fileName: amd64FileName}
 var platformArm64 = Platform{Os: "linux", Arch: "arm64", fileName: arm64FileName}
 
-var expectedProvider = &TerraformProvider{
-	name:      "dummy",
-	Version:   "1.2.5",
+var expectedProvider = &Provider{
+	path: getDefaultPath(),
 	Platforms: []Platform{platformAmd64, platformArm64},
 }
 
@@ -38,11 +38,10 @@ func TestNewProviderParsing(t *testing.T) {
 	//m := NewMockFiler(ctrl)
 	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
-	m,_ := NewFileProvider(getDefaultPath())
-	provider,err := NewProvider(defaultConfig, m)
+	p, _ := path.NewPath(defaultConfig)
+	m,_ := NewFileProvider(p)
+	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
-	assert.Equal(t, expectedProvider.name, provider.name, "expected %s, but got: %s", expectedProvider.name, provider.name)
-	assert.Equal(t, expectedProvider.Version, provider.Version, "expected %s, but got: %s", expectedProvider.Version, provider.Version)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
 	assert.Equal(t, expectedProvider.Platforms[1].Arch, provider.Platforms[1].Arch, "expected Architecture %+v, but got: %+v", "arm64", expectedProvider.Platforms[1].Arch)
 }
@@ -50,16 +49,16 @@ func TestNewProviderParsing(t *testing.T) {
 
 
 func TestVersionFromProvider(t *testing.T) {
-
 	//ctrl := gomock.NewController(t)
 	//defer ctrl.Finish()
 	//m := NewMockFiler(ctrl)
 	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
-	m,_ := NewFileProvider(getDefaultPath())
 	versions := Versions{}
 	expVersions := Versions{}
-	provider,err := NewProvider(defaultConfig,m)
+	p, _ := path.NewPath(defaultConfig)
+	m,_ := NewFileProvider(p)
+	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
 	existing, _ := os.ReadFile(defaultConfig.ArtifactDir+"/existing.json")
@@ -69,5 +68,5 @@ func TestVersionFromProvider(t *testing.T) {
 	err = json.Unmarshal(expected, &expVersions)
 	require.NoError(t, err)
 	versions.Versions = append(versions.Versions, *version)
-	assert.Equal(t, expVersions, versions, "Versions doesn't match exp %+v, got: %+v", expVersions, versions)
+	assert.Equal(t, expVersions, versions, "VersionsPath doesn't match exp %+v, got: %+v", expVersions, versions)
 }
