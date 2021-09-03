@@ -93,11 +93,11 @@ func (p *Provider) copy(file string) (err error) {
 	src := p.path.ArtifactsPath() + "/" + file
 	dst := p.path.BinariesPath() + "/" + file
 	log.Printf("copying file from %s to %s", src, dst)
-	_, err = copy(src, dst)
+	_, err = Copy(src, dst)
 	return err
 }
 
-func copy(src, dst string) (int64, error) {
+func Copy(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return 0, err

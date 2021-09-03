@@ -36,6 +36,17 @@ var defaultConfig = config.Config{
 	WebRoot:     "/",
 }
 
+var greenConfig = config.Config{
+	// todo: find a system to store / restore files in test
+	Base:        "./../../test_data/target_green",
+	ArtifactDir: "./../../test_data/source",
+	Namespace:   "absaoss",
+	Branch:      "gh-pages",
+	WebRoot:     "/",
+	Owner:       "absaoss",
+	Repository:  "terraform-provider-dummy",
+}
+
 func getDefaultPath() *path.Path {
 	p, _ := path.NewPath(defaultConfig)
 	return p
@@ -75,4 +86,33 @@ func TestVersionFromProvider(t *testing.T) {
 	require.NoError(t, err)
 	versions.Versions = append(versions.Versions, *version)
 	assert.Equal(t, expVersions, versions, "VersionsPath doesn't match exp %+v, got: %+v", expVersions, versions)
+}
+
+func TestGreenPath(t *testing.T) {
+	// init
+	path, err := path.NewPath(greenConfig)
+	require.NoError(t, err)
+	storage, err := storage.NewProvider(path)
+	require.NoError(t, err)
+	provider, err := NewProvider(path, storage)
+	require.NoError(t, err)
+	err = provider.GenerateDownloadInfo()
+	require.NoError(t, err)
+	versions, err := storage.GetVersions()
+	require.NoError(t, err)
+	version := provider.GenerateVersion()
+	versions.Versions = append(versions.Versions, *version)
+	err = storage.WriteVersions(versions)
+	require.NoError(t, err)
+	err = storage.SaveBinaries()
+	require.NoError(t, err)
+	// todo: make assertions here
+}
+
+func TestMain(m *testing.M) {
+	defer os.RemoveAll(greenConfig.Base)
+	_ = os.Mkdir(greenConfig.Base+"/absaoss/dummy", 0755)
+	_, _ = storage.Copy(greenConfig.ArtifactDir+"/existing.json", greenConfig.Base+"/absaoss/dummy/versions")
+	m.Run()
+	// todo: prepare folder test_green and clean at the end of the test
 }
