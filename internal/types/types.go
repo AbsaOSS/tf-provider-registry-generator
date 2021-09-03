@@ -1,4 +1,4 @@
-package terraform
+package types
 
 type Download struct {
 	Protocols           []string `json:"protocols"`
@@ -32,6 +32,6 @@ type Version struct {
 
 type Platform struct {
 	Os       string `json:"os"`
-	Arch     string `json:"arch"`
-	fileName string
+	Arch       string `json:"arch"`
+	FileOrigin string
 }

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/storage"
+	"github.com/k0da/tfreg-golang/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
@@ -15,12 +17,12 @@ const (
 	arm64FileName = "terraform-provider-dummy_1.2.5_linux_arm64.zip"
 )
 
-var platformAmd64 = Platform{Os: "linux", Arch: "amd64", fileName: amd64FileName}
-var platformArm64 = Platform{Os: "linux", Arch: "arm64", fileName: arm64FileName}
+var platformAmd64 = types.Platform{Os: "linux", Arch: "amd64", FileOrigin: amd64FileName}
+var platformArm64 = types.Platform{Os: "linux", Arch: "arm64", FileOrigin: arm64FileName}
 
 var expectedProvider = &Provider{
 	path: getDefaultPath(),
-	Platforms: []Platform{platformAmd64, platformArm64},
+	Platforms: []types.Platform{platformAmd64, platformArm64},
 }
 
 var defaultConfig = config.Config{
@@ -32,6 +34,11 @@ var defaultConfig = config.Config{
 	WebRoot: "/",
 }
 
+func getDefaultPath() *path.Path{
+	p, _ := path.NewPath(defaultConfig)
+	return p
+}
+
 func TestNewProviderParsing(t *testing.T) {
 	//ctrl := gomock.NewController(t)
 	//defer ctrl.Finish()
@@ -39,7 +46,7 @@ func TestNewProviderParsing(t *testing.T) {
 	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
 	p, _ := path.NewPath(defaultConfig)
-	m,_ := NewFileProvider(p)
+	m,_ := storage.NewProvider(p)
 	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
@@ -54,10 +61,10 @@ func TestVersionFromProvider(t *testing.T) {
 	//m := NewMockFiler(ctrl)
 	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
-	versions := Versions{}
-	expVersions := Versions{}
+	versions := types.Versions{}
+	expVersions := types.Versions{}
 	p, _ := path.NewPath(defaultConfig)
-	m,_ := NewFileProvider(p)
+	m,_ := storage.NewProvider(p)
 	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()

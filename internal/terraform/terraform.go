@@ -4,17 +4,19 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/storage"
+	"github.com/k0da/tfreg-golang/internal/types"
 	"os"
 )
 const protocolVersion = "5.2"
 
 type Provider struct {
-	Platforms []Platform
+	Platforms []types.Platform
 	path       *path.Path
-	fileProvider Filer
+	fileProvider storage.Storage
 }
 
-func NewProvider(path *path.Path, fp Filer) (p *Provider, err error) {
+func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
 	if path == nil {
 		err = fmt.Errorf("nil path provider")
 		return
@@ -27,10 +29,10 @@ func NewProvider(path *path.Path, fp Filer) (p *Provider, err error) {
 	p.fileProvider = fp
 	p.path = path
 	for _, a := range p.path.GetArtifacts() {
-		p.Platforms = append(p.Platforms, Platform{
+		p.Platforms = append(p.Platforms, types.Platform{
 			Os:       a.Os,
 			Arch:     a.Arch,
-			fileName: a.File,
+			FileOrigin: a.File,
 		})
 	}
 	return
@@ -40,10 +42,10 @@ func (p *Provider) GenerateDownloadInfo() (err error) {
 	const url = "https://media.githubusercontent.com/media/downloads/"
 	var path string
 	for _, platform := range p.Platforms {
-		d := Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.fileName}
-		d.DownloadURL = url+platform.fileName
+		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
+		d.DownloadURL = url+platform.FileOrigin
 		d.Protocols = []string{protocolVersion}
-		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.fileName)
+		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
 			return err
 		}
@@ -59,12 +61,12 @@ func (p *Provider) GenerateDownloadInfo() (err error) {
 	return
 }
 
-func (p *Provider) GenerateVersion() *Version {
-	version := &Version{}
+func (p *Provider) GenerateVersion() *types.Version {
+	version := &types.Version{}
 	version.Protocols = []string{protocolVersion}
 	version.Version = p.path.Version
 	for _, platform := range p.Platforms {
-		version.Platforms = append(version.Platforms, Platform{Os: platform.Os, Arch: platform.Arch})
+		version.Platforms = append(version.Platforms, types.Platform{Os: platform.Os, Arch: platform.Arch})
 	}
 	return version
 }

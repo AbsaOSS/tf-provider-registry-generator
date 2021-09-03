@@ -1,17 +1,27 @@
 package storage
 
 import (
+	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/path"
-	"github.com/k0da/tfreg-golang/internal/terraform"
+	"github.com/k0da/tfreg-golang/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 )
 
-var linuxAmd64Download = terraform.Download{
+var linuxAmd64Download = types.Download{
 	Os: "linux",
 	Arch: "amd64",
+}
+
+var defaultConfig = config.Config{
+	Base:  "./../../test_data/target",
+	ArtifactDir: "./../../test_data/source",
+	Namespace: "absaoss",
+	TargetDir: "target",
+	Branch: "gh-pages",
+	WebRoot: "/",
 }
 
 func getDefaultPath() *path.Path{
@@ -22,7 +32,7 @@ func getDefaultPath() *path.Path{
 func TestCreatePlatformMetadata(t *testing.T) {
 	// arrange
 
-	fp, err := NewFileProvider(getDefaultPath())
+	fp, err := NewProvider(getDefaultPath())
 	require.NoError(t, err)
 	// act
 	path, err := fp.CreatePlatformMetadata(linuxAmd64Download)

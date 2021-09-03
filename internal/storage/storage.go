@@ -4,27 +4,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/k0da/tfreg-golang/internal/path"
-	"github.com/k0da/tfreg-golang/internal/terraform"
+	"github.com/k0da/tfreg-golang/internal/types"
 	"os"
 )
 
-// FileProvider retrieving proper path
-type FileProvider struct {
+// Provider retrieving proper path
+type Provider struct {
 	namespace string
 	path      *path.Path
 }
 
-type Filer interface {
-	CreatePlatformMetadata(download terraform.Download) (path string, err error)
+type Storage interface {
+	CreatePlatformMetadata(download types.Download) (path string, err error)
 }
 
-func NewFileProvider(path *path.Path) (provider *FileProvider, err error) {
-	provider = new(FileProvider)
+func NewProvider(path *path.Path) (provider *Provider, err error) {
+	provider = new(Provider)
 	provider.path = path
 	return
 }
 
-func (p *FileProvider) CreatePlatformMetadata(download terraform.Download) (path string, err error) {
+func (p *Provider) CreatePlatformMetadata(download types.Download) (path string, err error) {
 	dir := p.path.DownloadsPath()+"/"+download.Os
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
@@ -40,8 +40,8 @@ func (p *FileProvider) CreatePlatformMetadata(download terraform.Download) (path
 }
 
 // GetVersions takes versions.json and retreives Versions struct
-func (p *FileProvider) GetVersions() (v terraform.Versions, err error) {
-	v = terraform.Versions{}
+func (p *Provider) GetVersions() (v types.Versions, err error) {
+	v = types.Versions{}
 	data, err := os.ReadFile(p.path.VersionsPath())
 	if err != nil {
 		return
@@ -51,7 +51,7 @@ func (p *FileProvider) GetVersions() (v terraform.Versions, err error) {
 }
 
 // WriteVersions stores versions.json
-func (p *FileProvider) WriteVersions(v terraform.Versions) (err error) {
+func (p *Provider) WriteVersions(v types.Versions) (err error) {
 	if len(v.Versions) == 0 {
 		err = fmt.Errorf("empty versions")
 		return
