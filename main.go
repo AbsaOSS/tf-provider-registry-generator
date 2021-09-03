@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/k0da/tfreg-golang/internal/storage"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/k0da/tfreg-golang/internal/storage"
 
 	"github.com/k0da/tfreg-golang/internal/config"
 	pather "github.com/k0da/tfreg-golang/internal/path"
@@ -33,8 +34,8 @@ func clone(c config.Config) {
 	dst := c.Base + "/terraform.json"
 	ioutil.WriteFile(dst, data, 0644)
 	d1 := []byte("path: " + c.WebRoot)
-	os.MkdirAll(c.Base +"/_data", 0755)
-	os.WriteFile(c.Base + "/_data/root.yaml", d1, 0644)
+	os.MkdirAll(c.Base+"/_data", 0755)
+	os.WriteFile(c.Base+"/_data/root.yaml", d1, 0644)
 }
 
 func provider(c config.Config) {
@@ -56,16 +57,16 @@ func provider(c config.Config) {
 }
 func commit(c config.Config) {
 	var lfsTrackCmd = shell.Command{
-		Command: "git",
-		Args:    []string{"lfs", "track", "download/*"},
-		WorkingDir : c.Base,
+		Command:    "git",
+		Args:       []string{"lfs", "track", "download/*"},
+		WorkingDir: c.Base,
 	}
 	lfsLog, err := shell.Execute(lfsTrackCmd)
 	checkError(err)
 	log.Printf("git lfs %s\n", lfsLog)
 	var gitAddAttrCmd = shell.Command{
-		Command: "git",
-		Args:    []string{"add", ".gitattributes"},
+		Command:    "git",
+		Args:       []string{"add", ".gitattributes"},
 		WorkingDir: c.Base,
 	}
 	gitAddLog, err := shell.Execute(gitAddAttrCmd)
