@@ -48,13 +48,16 @@ func provider(c config.Config) {
 	checkError(err)
 	err = provider.GenerateDownloadInfo()
 	checkError(err)
-	_ = provider.GenerateVersion()
-	// ...
-	//versions.Versions = append(versions.Versions, *version)
-	//pather.WriteVersions(versions)
+	versions,err := storage.GetVersions()
 	checkError(err)
-
+	version := provider.GenerateVersion()
+	versions.Versions = append(versions.Versions, *version)
+	err = storage.WriteVersions(versions)
+	checkError(err)
+	err = storage.SaveBinaries()
+	checkError(err)
 }
+
 func commit(c config.Config) {
 	var lfsTrackCmd = shell.Command{
 		Command:    "git",

@@ -23,6 +23,7 @@ type Artifact struct {
 	File    string
 }
 
+
 func NewPath(c config.Config) (p *Path, err error) {
 	p = &Path{
 		config: c,
@@ -73,9 +74,25 @@ func (p *Path) DownloadsPath() string {
 	return p.providerRoot() + "/" + p.Version + "/download"
 }
 
+func (p *Path) BinariesPath() string {
+	return p.root() + "/binaries"
+}
+
+func (p *Path) UrlBinaries() string {
+	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository +"/" + p.config.Branch + "/binaries/"
+}
+
 // GetArtifacts returns valid list of artifacts with at least one artifact
 func (p *Path) GetArtifacts() []Artifact {
 	return p.artifacts
+}
+
+func (p *Path) GetShaSumFile() string {
+	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS"
+}
+
+func (p *Path) GetShaSumSignatureFile() string {
+	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS.sig"
 }
 
 // makes list of ArtifactsPath from files in the path

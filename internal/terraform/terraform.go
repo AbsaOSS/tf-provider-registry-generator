@@ -41,7 +41,7 @@ func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
 }
 
 func (p *Provider) GenerateDownloadInfo() (err error) {
-	const url = "https://media.githubusercontent.com/media/downloads/"
+	var url = p.path.UrlBinaries()
 	var path string
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
@@ -51,8 +51,8 @@ func (p *Provider) GenerateDownloadInfo() (err error) {
 		if err != nil {
 			return err
 		}
-		d.ShasumsSignatureURL = url + "terraform-provider-" + p.path.Name + "_" + p.path.Version + "_SHA256SUMS.sig"
-		d.ShasumsURL = url + "terraform-provider-" + p.path.Name + "_" + p.path.Version + "_SHA256SUMS"
+		d.ShasumsSignatureURL = url + p.path.GetShaSumSignatureFile()
+		d.ShasumsURL = url + p.path.GetShaSumFile()
 		// todo: d.SigningKeys = resolve keys
 		path, err = p.fileProvider.CreatePlatformMetadata(d)
 		if err != nil {

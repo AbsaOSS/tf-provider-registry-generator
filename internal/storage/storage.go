@@ -3,6 +3,8 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"os"
 
 	"github.com/k0da/tfreg-golang/internal/path"
@@ -17,6 +19,8 @@ type Provider struct {
 
 type Storage interface {
 	CreatePlatformMetadata(download types.Download) (path string, err error)
+	GetVersions() (v types.Versions, err error)
+	WriteVersions(v types.Versions) (err error)
 }
 
 func NewProvider(path *path.Path) (provider *Provider, err error) {
@@ -41,8 +45,12 @@ func (p *Provider) CreatePlatformMetadata(download types.Download) (path string,
 }
 
 // GetVersions takes versions.json and retreives Versions struct
+// if file doesn't exists, return empty Versions slice
 func (p *Provider) GetVersions() (v types.Versions, err error) {
 	v = types.Versions{}
+	if _, err := os.Stat(p.path.VersionsPath()); os.IsNotExist(err) {
+		return v,nil
+	}
 	data, err := os.ReadFile(p.path.VersionsPath())
 	if err != nil {
 		return
@@ -60,4 +68,57 @@ func (p *Provider) WriteVersions(v types.Versions) (err error) {
 	data, err := json.Marshal(v)
 	err = os.WriteFile(p.path.VersionsPath(), data, 0644)
 	return
+}
+
+func (p *Provider) SaveBinaries() (err error){
+	err = os.MkdirAll(p.path.BinariesPath(), 0755)
+	if err != nil {
+		return
+	}
+	for _, a := range p.path.GetArtifacts() {
+		err = p.copy(a.File)
+		if err != nil {
+			return err
+		}
+	}
+	err = p.copy(p.path.GetShaSumFile())
+	if err != nil {
+		return err
+	}
+	err = p.copy(p.path.GetShaSumSignatureFile())
+	return
+}
+
+func (p *Provider) copy(file string) (err error) {
+	src := p.path.ArtifactsPath() + "/" + file
+	dst := p.path.BinariesPath() + "/" + file
+	log.Printf("copying file from %s to %s", src,dst)
+	_, err = copy(src, dst)
+	return err
+}
+
+
+func copy(src, dst string) (int64, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer destination.Close()
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, err
 }
