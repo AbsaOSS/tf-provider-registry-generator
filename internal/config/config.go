@@ -13,13 +13,22 @@ type Config struct {
 	Branch      string
 	WebRoot     string
 	Base        string
-	GPGKeyID	string
+	Owner       string
+	Repository  string
+	RepoURL     string
+	GPGKeyID    string
 }
 
 func NewConfig(base string) (c Config, err error) {
 	const targetDir = "TARGET_DIR"
 	const artifactsDir = "ARTIFACTS_DIR"
 	const namespace = "NAMESPACE"
+	const gpgKeyID = "GPG_KEYID"
+	const branch = "BRANCH"
+	const githubRepo = "GITHUB_REPOSITORY"
+	const webRoot = "WEB_ROOT"
+	const repoURL = "REPO_URL"
+	const ghToken = "GITHUB_TOKEN"
 	c = Config{}
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
 	if c.TargetDir == "" {
@@ -31,12 +40,31 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty %s", c.ArtifactDir)
 		return
 	}
-	c.Namespace = env.GetEnvAsStringOrFallback(namespace, "")
-	if c.Namespace == "" {
-		err = fmt.Errorf("empty %s", namespace)
+	c.GPGKeyID = env.GetEnvAsStringOrFallback(gpgKeyID, "")
+	if c.GPGKeyID == "" {
+		err = fmt.Errorf("empty %s", gpgKeyID)
 		return
 	}
-	// TODO: read GPG_KEY_ID
+	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")
+	ghRepo := env.GetEnvAsStringOrFallback(githubRepo, "")
+
+	orgRepo = strings.Split(ghRepo, "/")
+	if len(orgRepo) != 2 {
+		err = fmt.Efforf("failed to parse %s", ghRepo)
+		return
+	}
+	c.Owner = orgRepo[0]
+	c.Repo = orgRepo[1]
+
+	c.WebRoot = env.GetEnvAsStringOrFallback(webRoot, "/")
+	c.Namespace = env.GetEnvAsStringOrFallback(namespace, c.Owner)
+	token = env.GetEnvAsStringOrFallback(ghToken, "")
+	if token == "" {
+		err = fmt.Errorf("empty token")
+		return
+	}
+	fallbackRepo := fmt.Sprintf("https://x-access-token:%s@github.com/%s/%s", token, c.Owner, c.Repo)
+	c.RepoURL = env.GetEnvAsStringOrFallback(repoURL, fallbackRepo)
 	if base == "" {
 		err = fmt.Errorf("empty base")
 		return
