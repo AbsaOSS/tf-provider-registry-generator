@@ -2,6 +2,7 @@ package terraform
 
 import (
 	"encoding/json"
+	"github.com/golang/mock/gomock"
 	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/storage"
@@ -40,13 +41,12 @@ func getDefaultPath() *path.Path{
 }
 
 func TestNewProviderParsing(t *testing.T) {
-	//ctrl := gomock.NewController(t)
-	//defer ctrl.Finish()
-	//m := NewMockFiler(ctrl)
-	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	m := storage.NewMockStorage(ctrl)
+	m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
 	p, _ := path.NewPath(defaultConfig)
-	m,_ := storage.NewProvider(p)
 	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
@@ -56,15 +56,14 @@ func TestNewProviderParsing(t *testing.T) {
 
 
 func TestVersionFromProvider(t *testing.T) {
-	//ctrl := gomock.NewController(t)
-	//defer ctrl.Finish()
-	//m := NewMockFiler(ctrl)
-	////m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	m := storage.NewMockStorage(ctrl)
+	m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base,nil)
 
 	versions := types.Versions{}
 	expVersions := types.Versions{}
 	p, _ := path.NewPath(defaultConfig)
-	m,_ := storage.NewProvider(p)
 	provider,err := NewProvider(p, m)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
