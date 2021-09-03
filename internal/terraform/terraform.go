@@ -3,16 +3,18 @@ package terraform
 import (
 	"crypto/sha256"
 	"fmt"
+	"os"
+
 	"github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/storage"
 	"github.com/k0da/tfreg-golang/internal/types"
-	"os"
 )
+
 const protocolVersion = "5.2"
 
 type Provider struct {
-	Platforms []types.Platform
-	path       *path.Path
+	Platforms    []types.Platform
+	path         *path.Path
 	fileProvider storage.Storage
 }
 
@@ -30,8 +32,8 @@ func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
 	p.path = path
 	for _, a := range p.path.GetArtifacts() {
 		p.Platforms = append(p.Platforms, types.Platform{
-			Os:       a.Os,
-			Arch:     a.Arch,
+			Os:         a.Os,
+			Arch:       a.Arch,
 			FileOrigin: a.File,
 		})
 	}
@@ -43,14 +45,14 @@ func (p *Provider) GenerateDownloadInfo() (err error) {
 	var path string
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
-		d.DownloadURL = url+platform.FileOrigin
+		d.DownloadURL = url + platform.FileOrigin
 		d.Protocols = []string{protocolVersion}
 		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
 			return err
 		}
-		d.ShasumsSignatureURL = url + "terraform-provider-"+p.path.Name+"_"+p.path.Version+"_SHA256SUMS.sig"
-		d.ShasumsURL = url + "terraform-provider-"+p.path.Name+"_"+p.path.Version+"_SHA256SUMS"
+		d.ShasumsSignatureURL = url + "terraform-provider-" + p.path.Name + "_" + p.path.Version + "_SHA256SUMS.sig"
+		d.ShasumsURL = url + "terraform-provider-" + p.path.Name + "_" + p.path.Version + "_SHA256SUMS"
 		// todo: d.SigningKeys = resolve keys
 		path, err = p.fileProvider.CreatePlatformMetadata(d)
 		if err != nil {

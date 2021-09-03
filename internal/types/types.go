@@ -31,7 +31,7 @@ type Version struct {
 }
 
 type Platform struct {
-	Os       string `json:"os"`
+	Os         string `json:"os"`
 	Arch       string `json:"arch"`
 	FileOrigin string
 }

@@ -2,11 +2,12 @@ package main
 
 import (
 	"bytes"
-	"github.com/k0da/tfreg-golang/internal/storage"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/k0da/tfreg-golang/internal/storage"
 
 	"github.com/k0da/tfreg-golang/internal/config"
 	pather "github.com/k0da/tfreg-golang/internal/path"
@@ -48,7 +49,7 @@ func provider() {
 	checkError(err)
 	file, err := storage.NewProvider(path)
 	checkError(err)
-	provider, err := terraform.NewProvider(path,file)
+	provider, err := terraform.NewProvider(path, file)
 	checkError(err)
 	err = provider.GenerateDownloadInfo()
 	checkError(err)

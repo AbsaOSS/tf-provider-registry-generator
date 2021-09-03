@@ -13,7 +13,7 @@ type Config struct {
 	Branch      string
 	WebRoot     string
 	Base        string
-	GPGKeyID	string
+	GPGKeyID    string
 }
 
 func NewConfig(base string) (c Config, err error) {

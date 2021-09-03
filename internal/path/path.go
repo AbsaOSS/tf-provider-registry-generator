@@ -2,16 +2,17 @@ package path
 
 import (
 	"fmt"
-	"github.com/k0da/tfreg-golang/internal/config"
 	"os"
 	"strings"
+
+	"github.com/k0da/tfreg-golang/internal/config"
 )
 
 type Path struct {
 	artifacts []Artifact
-	config  config.Config
-	Name    string
-	Version string
+	config    config.Config
+	Name      string
+	Version   string
 }
 
 type Artifact struct {
@@ -24,7 +25,7 @@ type Artifact struct {
 
 func NewPath(c config.Config) (p *Path, err error) {
 	p = &Path{
-		config:   c,
+		config: c,
 	}
 	var files []os.DirEntry
 	files, err = os.ReadDir(c.ArtifactDir)
@@ -73,7 +74,7 @@ func (p *Path) DownloadsPath() string {
 }
 
 // GetArtifacts returns valid list of artifacts with at least one artifact
-func (p *Path) GetArtifacts() []Artifact{
+func (p *Path) GetArtifacts() []Artifact {
 	return p.artifacts
 }
 

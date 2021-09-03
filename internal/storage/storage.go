@@ -3,9 +3,10 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+
 	"github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/types"
-	"os"
 )
 
 // Provider retrieving proper path
@@ -25,13 +26,13 @@ func NewProvider(path *path.Path) (provider *Provider, err error) {
 }
 
 func (p *Provider) CreatePlatformMetadata(download types.Download) (path string, err error) {
-	dir := p.path.DownloadsPath()+"/"+download.Os
+	dir := p.path.DownloadsPath() + "/" + download.Os
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
 		return
 	}
 	path = dir + "/" + download.Arch
-	b,err := json.Marshal(download)
+	b, err := json.Marshal(download)
 	if err != nil {
 		return
 	}
