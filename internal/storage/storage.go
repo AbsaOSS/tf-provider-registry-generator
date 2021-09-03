@@ -49,7 +49,7 @@ func (p *Provider) CreatePlatformMetadata(download types.Download) (path string,
 func (p *Provider) GetVersions() (v types.Versions, err error) {
 	v = types.Versions{}
 	if _, err := os.Stat(p.path.VersionsPath()); os.IsNotExist(err) {
-		return v,nil
+		return v, nil
 	}
 	data, err := os.ReadFile(p.path.VersionsPath())
 	if err != nil {
@@ -70,7 +70,7 @@ func (p *Provider) WriteVersions(v types.Versions) (err error) {
 	return
 }
 
-func (p *Provider) SaveBinaries() (err error){
+func (p *Provider) SaveBinaries() (err error) {
 	err = os.MkdirAll(p.path.BinariesPath(), 0755)
 	if err != nil {
 		return
@@ -92,11 +92,10 @@ func (p *Provider) SaveBinaries() (err error){
 func (p *Provider) copy(file string) (err error) {
 	src := p.path.ArtifactsPath() + "/" + file
 	dst := p.path.BinariesPath() + "/" + file
-	log.Printf("copying file from %s to %s", src,dst)
+	log.Printf("copying file from %s to %s", src, dst)
 	_, err = copy(src, dst)
 	return err
 }
-
 
 func copy(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)

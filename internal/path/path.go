@@ -23,7 +23,6 @@ type Artifact struct {
 	File    string
 }
 
-
 func NewPath(c config.Config) (p *Path, err error) {
 	p = &Path{
 		config: c,
@@ -59,7 +58,7 @@ func (p *Path) providerRoot() string {
 }
 
 func (p *Path) ArtifactsPath() string {
-	return p.root() + "/" + p.config.ArtifactDir
+	return p.config.ArtifactDir
 }
 
 func (p *Path) TargetsPath() string {
@@ -79,7 +78,7 @@ func (p *Path) BinariesPath() string {
 }
 
 func (p *Path) UrlBinaries() string {
-	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository +"/" + p.config.Branch + "/binaries/"
+	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository + "/" + p.config.Branch + "/binaries/"
 }
 
 // GetArtifacts returns valid list of artifacts with at least one artifact

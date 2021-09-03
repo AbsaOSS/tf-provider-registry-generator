@@ -41,12 +41,14 @@ func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
 }
 
 func (p *Provider) GenerateDownloadInfo() (err error) {
+	// todo: testurl
 	var url = p.path.UrlBinaries()
 	var path string
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
 		d.DownloadURL = url + platform.FileOrigin
 		d.Protocols = []string{protocolVersion}
+		// todo: consider to check if files exists, don't necessarily to be on this place
 		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
 			return err

@@ -48,7 +48,7 @@ func provider(c config.Config) {
 	checkError(err)
 	err = provider.GenerateDownloadInfo()
 	checkError(err)
-	versions,err := storage.GetVersions()
+	versions, err := storage.GetVersions()
 	checkError(err)
 	version := provider.GenerateVersion()
 	versions.Versions = append(versions.Versions, *version)

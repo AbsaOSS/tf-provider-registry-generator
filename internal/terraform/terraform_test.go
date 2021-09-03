@@ -55,7 +55,6 @@ func TestNewProviderParsing(t *testing.T) {
 }
 
 // todo: test corner cases (you create corner cases with wrong data (no files, wrong file names, etc), + wrong config (invalid paths etc...))
-
 func TestVersionFromProvider(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
