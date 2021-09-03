@@ -1,20 +1,17 @@
 package main
 
 import (
-	"bytes"
+	"github.com/k0da/tfreg-golang/internal/storage"
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
-
-	"github.com/k0da/tfreg-golang/internal/storage"
 
 	"github.com/k0da/tfreg-golang/internal/config"
 	pather "github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/terraform"
-)
 
-var path = "pages/" + os.Getenv("TARGET_DIR")
+	"github.com/AbsaOSS/gopkg/shell"
+)
 
 func checkError(err error) {
 	if err != nil {
@@ -22,66 +19,67 @@ func checkError(err error) {
 	}
 }
 
-func clone() {
-	//path := "pages/" + os.Getenv("TARGET_DIR")
-	webroot := "path: " + os.Getenv("WEB_ROOT")
-	cmd := exec.Command("git", "clone", "--branch", os.Getenv("BRANCH"), os.Getenv("REPO_URL"), "pages")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
+func clone(c config.Config) {
+	var cmd = shell.Command{
+		Command: "git",
+		Args:    []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base},
+	}
+	gitLog, err := shell.Execute(cmd)
 	checkError(err)
+	log.Printf("Git cloned with %s\n", gitLog)
 
-	data, err := ioutil.ReadFile("/data/terraform.json")
+	data, err := ioutil.ReadFile("data/terraform.json")
 	checkError(err)
-	dst := path + "/terraform.json"
+	dst := c.Base + "/terraform.json"
 	ioutil.WriteFile(dst, data, 0644)
-	d1 := []byte(webroot)
-	os.MkdirAll(path+"/_data", 0755)
-	os.WriteFile(path+"/_data/root.yaml", d1, 0644)
+	d1 := []byte("path: " + c.WebRoot)
+	os.MkdirAll(c.Base +"/_data", 0755)
+	os.WriteFile(c.Base + "/_data/root.yaml", d1, 0644)
 }
 
-func provider() {
-
+func provider(c config.Config) {
 	// init
-	config, err := config.NewConfig("pages")
+	path, err := pather.NewPath(c)
 	checkError(err)
-	path, err := pather.NewPath(config)
+	storage, err := storage.NewProvider(path)
 	checkError(err)
-	file, err := storage.NewProvider(path)
-	checkError(err)
-	provider, err := terraform.NewProvider(path, file)
+	provider, err := terraform.NewProvider(path, storage)
 	checkError(err)
 	err = provider.GenerateDownloadInfo()
 	checkError(err)
-
 	_ = provider.GenerateVersion()
+	// ...
 	//versions.Versions = append(versions.Versions, *version)
 	//pather.WriteVersions(versions)
 	checkError(err)
 
 }
-func commit() {
-	path := "pages/" + os.Getenv("TARGET_DIR")
-	cmd := exec.Command("git", "add", path)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
+func commit(c config.Config) {
+	var lfsTrackCmd = shell.Command{
+		Command: "git",
+		Args:    []string{"lfs", "track", "download/*"},
+		WorkingDir : c.Base,
+	}
+	lfsLog, err := shell.Execute(lfsTrackCmd)
 	checkError(err)
-	cmd = exec.Command("git", "commit", "-m", "auto")
-	cmd.Stdout = &out
-	err = cmd.Run()
+	log.Printf("git lfs %s\n", lfsLog)
+	var gitAddAttrCmd = shell.Command{
+		Command: "git",
+		Args:    []string{"add", ".gitattributes"},
+		WorkingDir: c.Base,
+	}
+	gitAddLog, err := shell.Execute(gitAddAttrCmd)
 	checkError(err)
-	cmd = exec.Command("git", "push", "origin", os.Getenv("BRANCH"))
-	cmd.Stdout = &out
-	err = cmd.Run()
-	checkError(err)
+	log.Printf("git add %s\n", gitAddLog)
 }
 
 func main() {
 	// clone pages repo
-	clone()
-	provider()
-	commit()
+	config, err := config.NewConfig("pages")
+	checkError(err)
+	clone(config)
+	provider(config)
+	commit(config)
 	//	ver, err := os.ReadFile("./version.json")
 	//	if err != nil {
 	//		fmt.Printf("Error %s", err.Error())
