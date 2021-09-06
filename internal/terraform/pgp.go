@@ -22,10 +22,8 @@ func findKey(keyring openpgp.EntityList, fpr []byte) *openpgp.Entity {
 }
 
 func (p *Provider) ExtractPublicKey() (key *types.GPGPublicKey, err error) {
-	// open global pubring.gpg
-	pubring := "/Users/ab012ib/.gnupg/pubring.gpg"
 	fpr := []byte(os.Getenv("GPG_FINGERPRINT"))
-	keyringFileBuffer, _ := os.Open(pubring)
+	keyringFileBuffer, _ := os.Open(p.path.GPGPubring())
 	defer keyringFileBuffer.Close()
 
 	entityList, _ := openpgp.ReadKeyRing(keyringFileBuffer)

@@ -8,7 +8,7 @@ import (
 	"github.com/k0da/tfreg-golang/internal/storage"
 
 	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/git"
+	"github.com/k0da/tfreg-golang/internal/cmd"
 	pather "github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/terraform"
 
@@ -24,7 +24,7 @@ func checkError(err error) {
 
 func clone(c config.Config) {
 	args := []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base}
-	err := git.RunGit(args, "")
+	err := cmd.Run("git", args, "")
 	checkError(err)
 
 	data, err := ioutil.ReadFile("data/terraform.json")
@@ -58,28 +58,28 @@ func provider(c config.Config) {
 
 func commit(c config.Config) {
 	lfsTrack := []string{"lfs", "track", "download/*"}
-	err := git.RunGit(lfsTrack, c.Base)
+	err := cmd.Run("git", lfsTrack, c.Base)
 	checkError(err)
 	gitAddAttr := []string{"add", ".gitattributes"}
-	err = git.RunGit(gitAddAttr, c.Base)
+	err = cmd.Run("git", gitAddAttr, c.Base)
 	checkError(err)
 	gitUser := []string{"config", "user.name"}
-	err = git.RunGit(gitUser, c.Base)
+	err = cmd.Run("git", gitUser, c.Base)
 	checkError(err)
 	gitEmail := []string{"config", "user.email"}
-	err = git.RunGit(gitEmail, c.Base)
+	err = cmd.Run("git", gitEmail, c.Base)
 	checkError(err)
 	gitSetRemote := []string{"remote" ,"set-url", "origin", c.RepoURL}
-	err = git.RunGit(gitSetRemote, c.Base)
+	err = cmd.Run("git", gitSetRemote, c.Base)
 	checkError(err)
 	gitAdd := []string{"add", "./"}
-	err = git.RunGit(gitAdd, c.Base)
+	err = cmd.Run("git", gitAdd, c.Base)
 	checkError(err)
 	gitCommit := []string{"commit", "-m", commitMsg}
-	err = git.RunGit(gitCommit, c.Base)
+	err = cmd.Run("git",gitCommit, c.Base)
 	checkError(err)
 	gitPush := []string{"push", "origin", c.Branch}
-	err = git.RunGit(gitPush, c.Base)
+	err = cmd.Run("git", gitPush, c.Base)
 	checkError(err)
 }
 

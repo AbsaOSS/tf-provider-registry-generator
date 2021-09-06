@@ -77,6 +77,10 @@ func (p *Path) BinariesPath() string {
 	return p.root() + "/binaries"
 }
 
+func (p *Path) GPGPubring() string {
+	return p.config.GPGHome + "/pubring.gpg"
+}
+
 func (p *Path) UrlBinaries() string {
 	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository + "/" + p.config.Branch + "/binaries/"
 }

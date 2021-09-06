@@ -8,16 +8,17 @@ import (
 )
 
 type Config struct {
-	TargetDir   string
-	Namespace   string
-	ArtifactDir string
-	Branch      string
-	WebRoot     string
-	Base        string
-	Owner       string
-	Repository  string
-	RepoURL     string
-	GPGFingerPrint    string
+	TargetDir      string
+	Namespace      string
+	ArtifactDir    string
+	Branch         string
+	WebRoot        string
+	Base           string
+	Owner          string
+	Repository     string
+	RepoURL        string
+	GPGFingerPrint string
+	GPGHome        string
 }
 
 func NewConfig(base string) (c Config, err error) {
@@ -68,5 +69,10 @@ func NewConfig(base string) (c Config, err error) {
 		return
 	}
 	c.Base = base
+	home := env.GetEnvAsStringOrFallback("HOME", "")
+	if home == "" {
+		err = fmt.Errorf("empty HOME")
+	}
+	c.GPGHome = home + "/.gnupg"
 	return
 }
