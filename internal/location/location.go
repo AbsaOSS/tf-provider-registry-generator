@@ -1,4 +1,4 @@
-package path
+package location
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/k0da/tfreg-golang/internal/config"
 )
 
-type Path struct {
+type Location struct {
 	artifacts []Artifact
 	config    config.Config
 	Name      string
@@ -23,8 +23,8 @@ type Artifact struct {
 	File    string
 }
 
-func NewPath(c config.Config) (p *Path, err error) {
-	p = &Path{
+func NewLocation(c config.Config) (p *Location, err error) {
+	p = &Location{
 		config: c,
 	}
 	var files []os.DirEntry
@@ -49,57 +49,57 @@ func NewPath(c config.Config) (p *Path, err error) {
 	return
 }
 
-func (p *Path) root() string {
+func (p *Location) root() string {
 	return p.config.Base
 }
 
-func (p *Path) providerRoot() string {
+func (p *Location) providerRoot() string {
 	return p.root() + "/" + p.config.Namespace + "/" + p.Name
 }
 
-func (p *Path) ArtifactsPath() string {
+func (p *Location) ArtifactsPath() string {
 	return p.config.ArtifactDir
 }
 
-func (p *Path) TargetsPath() string {
+func (p *Location) TargetsPath() string {
 	return p.root() + "/" + p.config.TargetDir
 }
 
-func (p *Path) VersionsPath() string {
+func (p *Location) VersionsPath() string {
 	return p.providerRoot() + "/versions"
 }
 
-func (p *Path) DownloadsPath() string {
+func (p *Location) DownloadsPath() string {
 	return p.providerRoot() + "/" + p.Version + "/download"
 }
 
-func (p *Path) BinariesPath() string {
+func (p *Location) BinariesPath() string {
 	return p.root() + "/binaries"
 }
 
-func (p *Path) GPGPubring() string {
+func (p *Location) GPGPubring() string {
 	return p.config.GPGHome + "/pubring.gpg"
 }
 
-func (p *Path) UrlBinaries() string {
+func (p *Location) UrlBinaries() string {
 	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository + "/" + p.config.Branch + "/binaries/"
 }
 
 // GetArtifacts returns valid list of artifacts with at least one artifact
-func (p *Path) GetArtifacts() []Artifact {
+func (p *Location) GetArtifacts() []Artifact {
 	return p.artifacts
 }
 
-func (p *Path) GetShaSumFile() string {
+func (p *Location) GetShaSumFile() string {
 	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS"
 }
 
-func (p *Path) GetShaSumSignatureFile() string {
+func (p *Location) GetShaSumSignatureFile() string {
 	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS.sig"
 }
 
 // makes list of ArtifactsPath from files in the path
-func (p *Path) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
+func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".zip") {
 			var pi Artifact
@@ -114,7 +114,7 @@ func (p *Path) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
 }
 
 // parse Name from file like this: terraform-provider-dummy_1.2.5_linux_amd64.zip into artifact
-func (p *Path) getArtifactInfo(fileName string) (a Artifact, err error) {
+func (p *Location) getArtifactInfo(fileName string) (a Artifact, err error) {
 	const prefix = "terraform-provider-"
 	if !strings.HasPrefix(fileName, prefix) {
 		err = fmt.Errorf("filed to parse %s, must start with %s", fileName, prefix)

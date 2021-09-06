@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/k0da/tfreg-golang/internal/path"
-	"github.com/k0da/tfreg-golang/internal/storage"
+	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/types"
 )
 
@@ -14,21 +13,15 @@ const protocolVersion = "5.2"
 
 type Provider struct {
 	Platforms    []types.Platform
-	path         *path.Path
-	fileProvider storage.Storage
+	path    *location.Location
 }
 
-func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
+func NewProvider(path *location.Location) (p *Provider, err error) {
 	if path == nil {
 		err = fmt.Errorf("nil path provider")
 		return
 	}
-	if fp == nil {
-		err = fmt.Errorf("nil file provider")
-		return
-	}
 	p = new(Provider)
-	p.fileProvider = fp
 	p.path = path
 	for _, a := range p.path.GetArtifacts() {
 		p.Platforms = append(p.Platforms, types.Platform{
@@ -40,10 +33,10 @@ func NewProvider(path *path.Path, fp storage.Storage) (p *Provider, err error) {
 	return
 }
 
-func (p *Provider) GenerateDownloadInfo() (err error) {
+func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 	// todo: testurl
 	var url = p.path.UrlBinaries()
-	var path string
+	downloads = []types.Download{}
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
 		d.DownloadURL = url + platform.FileOrigin
@@ -51,16 +44,12 @@ func (p *Provider) GenerateDownloadInfo() (err error) {
 		// todo: consider to check if files exists, don't necessarily to be on this place
 		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
-			return err
+			return downloads, err
 		}
 		d.ShasumsSignatureURL = url + p.path.GetShaSumSignatureFile()
 		d.ShasumsURL = url + p.path.GetShaSumFile()
 		// todo: d.SigningKeys = resolve keys
-		path, err = p.fileProvider.CreatePlatformMetadata(d)
-		if err != nil {
-			err = fmt.Errorf("error writing metadata %s, %s", path, err)
-			return
-		}
+		downloads = append(downloads, d)
 	}
 	return
 }

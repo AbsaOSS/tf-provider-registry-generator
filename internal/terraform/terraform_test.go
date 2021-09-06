@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/storage"
 	"github.com/k0da/tfreg-golang/internal/types"
 	"github.com/stretchr/testify/assert"
@@ -47,8 +47,8 @@ var greenConfig = config.Config{
 	Repository:  "terraform-provider-dummy",
 }
 
-func getDefaultPath() *path.Path {
-	p, _ := path.NewPath(defaultConfig)
+func getDefaultPath() *location.Location {
+	p, _ := location.NewLocation(defaultConfig)
 	return p
 }
 
@@ -56,10 +56,10 @@ func TestNewProviderParsing(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	m := storage.NewMockStorage(ctrl)
-	m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
+	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
-	p, _ := path.NewPath(defaultConfig)
-	provider, err := NewProvider(p, m)
+	p, _ := location.NewLocation(defaultConfig)
+	provider, err := NewProvider(p)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
 	assert.Equal(t, expectedProvider.Platforms[1].Arch, provider.Platforms[1].Arch, "expected Architecture %+v, but got: %+v", "arm64", expectedProvider.Platforms[1].Arch)
@@ -70,12 +70,12 @@ func TestVersionFromProvider(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	m := storage.NewMockStorage(ctrl)
-	m.EXPECT().CreatePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
+	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
 	versions := types.Versions{}
 	expVersions := types.Versions{}
-	p, _ := path.NewPath(defaultConfig)
-	provider, err := NewProvider(p, m)
+	p, _ := location.NewLocation(defaultConfig)
+	provider, err := NewProvider(p)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
 	existing, _ := os.ReadFile(defaultConfig.ArtifactDir + "/existing.json")
@@ -90,13 +90,15 @@ func TestVersionFromProvider(t *testing.T) {
 
 func TestGreenPath(t *testing.T) {
 	// init
-	path, err := path.NewPath(greenConfig)
+	path, err := location.NewLocation(greenConfig)
 	require.NoError(t, err)
 	storage, err := storage.NewProvider(path)
 	require.NoError(t, err)
-	provider, err := NewProvider(path, storage)
+	provider, err := NewProvider(path)
 	require.NoError(t, err)
-	err = provider.GenerateDownloadInfo()
+	downloads,err := provider.GetDownloadInfo()
+	require.NoError(t, err)
+	_, err = storage.WritePlatformMetadata(downloads)
 	require.NoError(t, err)
 	versions, err := storage.GetVersions()
 	require.NoError(t, err)

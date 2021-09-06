@@ -34,21 +34,6 @@ func (m *MockStorage) EXPECT() *MockStorageMockRecorder {
 	return m.recorder
 }
 
-// CreatePlatformMetadata mocks base method.
-func (m *MockStorage) CreatePlatformMetadata(download types.Download) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreatePlatformMetadata", download)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreatePlatformMetadata indicates an expected call of CreatePlatformMetadata.
-func (mr *MockStorageMockRecorder) CreatePlatformMetadata(download interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePlatformMetadata", reflect.TypeOf((*MockStorage)(nil).CreatePlatformMetadata), download)
-}
-
 // GetVersions mocks base method.
 func (m *MockStorage) GetVersions() (types.Versions, error) {
 	m.ctrl.T.Helper()
@@ -62,6 +47,21 @@ func (m *MockStorage) GetVersions() (types.Versions, error) {
 func (mr *MockStorageMockRecorder) GetVersions() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersions", reflect.TypeOf((*MockStorage)(nil).GetVersions))
+}
+
+// WritePlatformMetadata mocks base method.
+func (m *MockStorage) WritePlatformMetadata(download types.Download) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WritePlatformMetadata", download)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// WritePlatformMetadata indicates an expected call of WritePlatformMetadata.
+func (mr *MockStorageMockRecorder) WritePlatformMetadata(download interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritePlatformMetadata", reflect.TypeOf((*MockStorage)(nil).WritePlatformMetadata), download)
 }
 
 // WriteVersions mocks base method.

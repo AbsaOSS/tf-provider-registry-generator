@@ -7,40 +7,46 @@ import (
 	"log"
 	"os"
 
-	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/types"
 )
 
 // Provider retrieving proper path
 type Provider struct {
 	namespace string
-	path      *path.Path
+	path      *location.Location
 }
 
 type Storage interface {
-	CreatePlatformMetadata(download types.Download) (path string, err error)
+	WritePlatformMetadata(download types.Download) (path string, err error)
 	GetVersions() (v types.Versions, err error)
 	WriteVersions(v types.Versions) (err error)
 }
 
-func NewProvider(path *path.Path) (provider *Provider, err error) {
+func NewProvider(path *location.Location) (provider *Provider, err error) {
 	provider = new(Provider)
 	provider.path = path
 	return
 }
 
-func (p *Provider) CreatePlatformMetadata(download types.Download) (path string, err error) {
-	dir := p.path.DownloadsPath() + "/" + download.Os
-	err = os.MkdirAll(dir, 0755)
-	if err != nil {
-		return
+func (p *Provider) WritePlatformMetadata(downloads []types.Download) (path string, err error) {
+	var b []byte
+	for _, d := range downloads {
+		dir := p.path.DownloadsPath() + "/" + d.Os
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return
+		}
+		path = dir + "/" + d.Arch
+		b, err = json.Marshal(d)
+		if err != nil {
+			return
+		}
+		err = os.WriteFile(path, b, 0644)
+		if err != nil {
+			return
+		}
 	}
-	path = dir + "/" + download.Arch
-	b, err := json.Marshal(download)
-	if err != nil {
-		return
-	}
-	err = os.WriteFile(path, b, 0644)
 	return
 }
 

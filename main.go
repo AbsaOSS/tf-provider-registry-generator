@@ -5,11 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/k0da/tfreg-golang/internal/storage"
-
 	"github.com/k0da/tfreg-golang/internal/cmd"
 	"github.com/k0da/tfreg-golang/internal/config"
-	pather "github.com/k0da/tfreg-golang/internal/path"
+	pather "github.com/k0da/tfreg-golang/internal/location"
+	"github.com/k0da/tfreg-golang/internal/storage"
 	"github.com/k0da/tfreg-golang/internal/terraform"
 )
 
@@ -36,13 +35,15 @@ func clone(c config.Config) {
 
 func provider(c config.Config) {
 	// init
-	path, err := pather.NewPath(c)
+	location, err := pather.NewLocation(c)
 	checkError(err)
-	storage, err := storage.NewProvider(path)
+	storage, err := storage.NewProvider(location)
 	checkError(err)
-	provider, err := terraform.NewProvider(path, storage)
+	provider, err := terraform.NewProvider(location)
 	checkError(err)
-	err = provider.GenerateDownloadInfo()
+	downloads, err := provider.GetDownloadInfo()
+	checkError(err)
+	_, err = storage.WritePlatformMetadata(downloads)
 	checkError(err)
 	versions, err := storage.GetVersions()
 	checkError(err)

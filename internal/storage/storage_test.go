@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/path"
+	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,8 +25,8 @@ var defaultConfig = config.Config{
 	WebRoot:     "/",
 }
 
-func getDefaultPath() *path.Path {
-	p, _ := path.NewPath(defaultConfig)
+func getDefaultPath() *location.Location {
+	p, _ := location.NewLocation(defaultConfig)
 	return p
 }
 
@@ -36,7 +36,7 @@ func TestCreatePlatformMetadata(t *testing.T) {
 	fp, err := NewProvider(getDefaultPath())
 	require.NoError(t, err)
 	// act
-	path, err := fp.CreatePlatformMetadata(linuxAmd64Download)
+	path, err := fp.WritePlatformMetadata([]types.Download{linuxAmd64Download})
 	// assert
 	assert.NoError(t, err)
 	assert.Equal(t, defaultConfig.Base+"/absaoss/dummy/1.2.5/download/linux/amd64", path)
