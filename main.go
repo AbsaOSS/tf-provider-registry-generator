@@ -7,11 +7,10 @@ import (
 
 	"github.com/k0da/tfreg-golang/internal/storage"
 
-	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/cmd"
+	"github.com/k0da/tfreg-golang/internal/config"
 	pather "github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/terraform"
-
 )
 
 const commitMsg = "Generate Terraform registry"
@@ -26,7 +25,6 @@ func clone(c config.Config) {
 	args := []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base}
 	err := cmd.Run("git", args, "")
 	checkError(err)
-
 	data, err := ioutil.ReadFile("data/terraform.json")
 	checkError(err)
 	dst := c.Base + "/terraform.json"
