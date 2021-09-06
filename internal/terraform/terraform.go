@@ -51,7 +51,7 @@ func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 		d.ShasumsURL = url + p.location.GetShaSumFile()
 		// todo: d.SigningKeys = resolve keys
 		gpgPublicKey, err = p.ExtractPublicKey()
-		if err == nil {
+		if err != nil {
 			return
 		}
 		d.SigningKeys.GpgPublicKeys = append(d.SigningKeys.GpgPublicKeys, *gpgPublicKey)

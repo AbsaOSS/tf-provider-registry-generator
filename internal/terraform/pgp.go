@@ -37,11 +37,12 @@ func (p *Provider) ExtractPublicKey() (key *types.GPGPublicKey, err error) {
 	if err != nil {
 		return
 	}
+	defer w.Close()
 	err = entity.Serialize(w)
 	if err != nil {
 		return nil, err
 	}
-	w.Close()
+
 	ASCIIArmor := b.String()
 	key = &types.GPGPublicKey{
 		KeyID:      entity.PrimaryKey.KeyIdString(),
