@@ -8,11 +8,13 @@ import (
 	"github.com/k0da/tfreg-golang/internal/storage"
 
 	"github.com/k0da/tfreg-golang/internal/config"
+	"github.com/k0da/tfreg-golang/internal/git"
 	pather "github.com/k0da/tfreg-golang/internal/path"
 	"github.com/k0da/tfreg-golang/internal/terraform"
 
-	"github.com/AbsaOSS/gopkg/shell"
 )
+
+const commitMsg = "Generate Terraform registry"
 
 func checkError(err error) {
 	if err != nil {
@@ -21,13 +23,9 @@ func checkError(err error) {
 }
 
 func clone(c config.Config) {
-	var cmd = shell.Command{
-		Command: "git",
-		Args:    []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base},
-	}
-	gitLog, err := shell.Execute(cmd)
+	args := []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base}
+	err := git.RunGit(args, "")
 	checkError(err)
-	log.Printf("Git cloned with %s\n", gitLog)
 
 	data, err := ioutil.ReadFile("data/terraform.json")
 	checkError(err)
@@ -59,47 +57,36 @@ func provider(c config.Config) {
 }
 
 func commit(c config.Config) {
-	var lfsTrackCmd = shell.Command{
-		Command:    "git",
-		Args:       []string{"lfs", "track", "download/*"},
-		WorkingDir: c.Base,
-	}
-	lfsLog, err := shell.Execute(lfsTrackCmd)
+	lfsTrack := []string{"lfs", "track", "download/*"}
+	err := git.RunGit(lfsTrack, c.Base)
 	checkError(err)
-	log.Printf("git lfs %s\n", lfsLog)
-	var gitAddAttrCmd = shell.Command{
-		Command:    "git",
-		Args:       []string{"add", ".gitattributes"},
-		WorkingDir: c.Base,
-	}
-	gitAddLog, err := shell.Execute(gitAddAttrCmd)
+	gitAddAttr := []string{"add", ".gitattributes"}
+	err = git.RunGit(gitAddAttr, c.Base)
 	checkError(err)
-	log.Printf("git add %s\n", gitAddLog)
+	gitUser := []string{"config", "user.name"}
+	err = git.RunGit(gitUser, c.Base)
+	checkError(err)
+	gitEmail := []string{"config", "user.email"}
+	err = git.RunGit(gitEmail, c.Base)
+	checkError(err)
+	gitSetRemote := []string{"remote" ,"set-url", "origin", c.RepoURL}
+	err = git.RunGit(gitSetRemote, c.Base)
+	checkError(err)
+	gitAdd := []string{"add", "./"}
+	err = git.RunGit(gitAdd, c.Base)
+	checkError(err)
+	gitCommit := []string{"commit", "-m", commitMsg}
+	err = git.RunGit(gitCommit, c.Base)
+	checkError(err)
+	gitPush := []string{"push", "origin", c.Branch}
+	err = git.RunGit(gitPush, c.Base)
+	checkError(err)
 }
 
 func main() {
-	// clone pages repo
 	config, err := config.NewConfig("pages")
 	checkError(err)
 	clone(config)
 	provider(config)
 	commit(config)
-	//	ver, err := os.ReadFile("./version.json")
-	//	if err != nil {
-	//		fmt.Printf("Error %s", err.Error())
-	//	}
-	//	down, err := os.ReadFile("./download.json")
-	//	if err != nil {
-	//		fmt.Printf("Error %s", err.Error())
-	//	}
-	//	var v registry.Version
-	//	var d registry.Download
-	//	json.Unmarshal(ver, &v)
-	//	err = json.Unmarshal(down, &d)
-	//	if err != nil {
-	//		fmt.Printf("Error %s", err.Error())
-	//	}
-	//	fmt.Printf("VersionsPath %+v", v.VersionsPath)
-	//	fmt.Println("\n")
-	//	fmt.Printf("Download %+v", d)
 }

@@ -30,6 +30,7 @@ func NewConfig(base string) (c Config, err error) {
 	const webRoot = "WEB_ROOT"
 	const repoURL = "REPO_URL"
 	const ghToken = "GITHUB_TOKEN"
+	const repo = "REPOSITORY"
 	c = Config{}
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
 	if c.TargetDir == "" {
@@ -55,7 +56,7 @@ func NewConfig(base string) (c Config, err error) {
 		return
 	}
 	c.Owner = orgRepo[0]
-	c.Repository = orgRepo[1]
+	c.Repository = env.GetEnvAsStringOrFallback(repo, orgRepo[1])
 
 	c.WebRoot = env.GetEnvAsStringOrFallback(webRoot, "/")
 	c.Namespace = env.GetEnvAsStringOrFallback(namespace, c.Owner)
