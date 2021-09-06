@@ -23,7 +23,7 @@ var platformAmd64 = types.Platform{Os: "linux", Arch: "amd64", FileOrigin: amd64
 var platformArm64 = types.Platform{Os: "linux", Arch: "arm64", FileOrigin: arm64FileName}
 
 var expectedProvider = &Provider{
-	path:      getDefaultPath(),
+	location:  getDefaultPath(),
 	Platforms: []types.Platform{platformAmd64, platformArm64},
 }
 
@@ -90,11 +90,11 @@ func TestVersionFromProvider(t *testing.T) {
 
 func TestGreenPath(t *testing.T) {
 	// init
-	path, err := location.NewLocation(greenConfig)
+	location, err := location.NewLocation(greenConfig)
 	require.NoError(t, err)
-	storage, err := storage.NewProvider(path)
+	storage, err := storage.NewProvider(location)
 	require.NoError(t, err)
-	provider, err := NewProvider(path)
+	provider, err := NewProvider(location)
 	require.NoError(t, err)
 	downloads,err := provider.GetDownloadInfo()
 	require.NoError(t, err)

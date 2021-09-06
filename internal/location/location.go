@@ -98,6 +98,11 @@ func (p *Location) GetShaSumSignatureFile() string {
 	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS.sig"
 }
 
+func (p *Location) GPGFingerprint() string {
+	return p.config.GPGFingerPrint
+}
+
+
 // makes list of ArtifactsPath from files in the path
 func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
 	for _, f := range files {

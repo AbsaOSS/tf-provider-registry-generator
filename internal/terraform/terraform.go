@@ -12,18 +12,18 @@ import (
 const protocolVersion = "5.2"
 
 type Provider struct {
-	Platforms    []types.Platform
-	path    *location.Location
+	Platforms []types.Platform
+	location  *location.Location
 }
 
 func NewProvider(path *location.Location) (p *Provider, err error) {
 	if path == nil {
-		err = fmt.Errorf("nil path provider")
+		err = fmt.Errorf("nil location provider")
 		return
 	}
 	p = new(Provider)
-	p.path = path
-	for _, a := range p.path.GetArtifacts() {
+	p.location = path
+	for _, a := range p.location.GetArtifacts() {
 		p.Platforms = append(p.Platforms, types.Platform{
 			Os:         a.Os,
 			Arch:       a.Arch,
@@ -35,20 +35,26 @@ func NewProvider(path *location.Location) (p *Provider, err error) {
 
 func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 	// todo: testurl
-	var url = p.path.UrlBinaries()
+	var url = p.location.UrlBinaries()
+	var gpgPublicKey *types.GPGPublicKey
 	downloads = []types.Download{}
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
 		d.DownloadURL = url + platform.FileOrigin
 		d.Protocols = []string{protocolVersion}
 		// todo: consider to check if files exists, don't necessarily to be on this place
-		d.Shasum, err = getSHA256(p.path.ArtifactsPath() + "/" + platform.FileOrigin)
+		d.Shasum, err = getSHA256(p.location.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
 			return downloads, err
 		}
-		d.ShasumsSignatureURL = url + p.path.GetShaSumSignatureFile()
-		d.ShasumsURL = url + p.path.GetShaSumFile()
+		d.ShasumsSignatureURL = url + p.location.GetShaSumSignatureFile()
+		d.ShasumsURL = url + p.location.GetShaSumFile()
 		// todo: d.SigningKeys = resolve keys
+		gpgPublicKey, err = p.ExtractPublicKey()
+		if err == nil {
+			return
+		}
+		d.SigningKeys.GpgPublicKeys = append(d.SigningKeys.GpgPublicKeys, *gpgPublicKey)
 		downloads = append(downloads, d)
 	}
 	return
@@ -57,7 +63,7 @@ func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 func (p *Provider) GenerateVersion() *types.Version {
 	version := &types.Version{}
 	version.Protocols = []string{protocolVersion}
-	version.Version = p.path.Version
+	version.Version = p.location.Version
 	for _, platform := range p.Platforms {
 		version.Platforms = append(version.Platforms, types.Platform{Os: platform.Os, Arch: platform.Arch})
 	}

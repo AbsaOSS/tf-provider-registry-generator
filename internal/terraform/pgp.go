@@ -10,11 +10,10 @@ import (
 	"golang.org/x/crypto/openpgp/armor"
 )
 
-func findKey(keyring openpgp.EntityList, fpr []byte) *openpgp.Entity {
+func findKey(keyring openpgp.EntityList, fpr string) *openpgp.Entity {
 	for _, entity := range keyring {
 		key := entity.PrimaryKey
-		fpr := key.Fingerprint
-		if key.Fingerprint == fpr {
+		if string(key.Fingerprint[:]) == fpr {
 			return entity
 		}
 	}
@@ -22,24 +21,31 @@ func findKey(keyring openpgp.EntityList, fpr []byte) *openpgp.Entity {
 }
 
 func (p *Provider) ExtractPublicKey() (key *types.GPGPublicKey, err error) {
-	fpr := []byte(os.Getenv("GPG_FINGERPRINT"))
-	keyringFileBuffer, _ := os.Open(p.path.GPGPubring())
-	defer keyringFileBuffer.Close()
+	keyringFile, err := os.Open(p.location.GPGPubring())
+	if err != nil {
+		return
+	}
+	defer keyringFile.Close()
 
-	entityList, _ := openpgp.ReadKeyRing(keyringFileBuffer)
-	pubkey := findKey(entityList, fpr)
+	entityList, err := openpgp.ReadKeyRing(keyringFile)
+	if err != nil {
+		return
+	}
+	entity := findKey(entityList, p.location.GPGFingerprint())
 	b := bytes.NewBuffer(nil)
-	w, _ := armor.Encode(b, openpgp.PublicKeyType, nil)
-	err = pubkey.Serialize(w)
+	w, err := armor.Encode(b, openpgp.PublicKeyType, nil)
+	if err != nil {
+		return
+	}
+	err = entity.Serialize(w)
 	if err != nil {
 		return nil, err
 	}
 	w.Close()
 	ASCIIArmor := b.String()
 	key = &types.GPGPublicKey{
-		KeyID: pubkey.PrimaryKey.KeyIdString(),
+		KeyID:      entity.PrimaryKey.KeyIdString(),
 		ASCIIArmor: strings.ReplaceAll(ASCIIArmor, "\n", "\\n"),
 	}
-
 	return
 }
