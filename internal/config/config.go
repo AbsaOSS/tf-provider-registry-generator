@@ -17,14 +17,14 @@ type Config struct {
 	Owner       string
 	Repository  string
 	RepoURL     string
-	GPGKeyID    string
+	GPGFingerPrint    string
 }
 
 func NewConfig(base string) (c Config, err error) {
 	const targetDir = "TARGET_DIR"
 	const artifactsDir = "ARTIFACTS_DIR"
 	const namespace = "NAMESPACE"
-	const gpgKeyID = "GPG_KEYID"
+	const gpgFingerprint = "GPG_FINGERPRINT"
 	const branch = "BRANCH"
 	const githubRepo = "GITHUB_REPOSITORY"
 	const webRoot = "WEB_ROOT"
@@ -41,9 +41,9 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty %s", c.ArtifactDir)
 		return
 	}
-	c.GPGKeyID = env.GetEnvAsStringOrFallback(gpgKeyID, "")
-	if c.GPGKeyID == "" {
-		err = fmt.Errorf("empty %s", gpgKeyID)
+	c.GPGFingerPrint = env.GetEnvAsStringOrFallback(gpgFingerprint, "")
+	if c.GPGFingerPrint == "" {
+		err = fmt.Errorf("empty %s", gpgFingerprint)
 		return
 	}
 	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")

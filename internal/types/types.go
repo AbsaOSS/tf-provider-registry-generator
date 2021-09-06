@@ -10,14 +10,16 @@ type Download struct {
 	ShasumsSignatureURL string   `json:"shasums_signature_url"`
 	Shasum              string   `json:"shasum"`
 	SigningKeys         struct {
-		GpgPublicKeys []struct {
-			KeyID          string `json:"key_id"`
-			ASCIIArmor     string `json:"ascii_armor"`
-			TrustSignature string `json:"trust_signature"`
-			Source         string `json:"source"`
-			SourceURL      string `json:"source_url"`
-		} `json:"gpg_public_keys"`
+		GpgPublicKeys []GPGPublicKey `json:"gpg_public_keys"`
 	} `json:"signing_keys"`
+}
+
+type GPGPublicKey struct {
+	KeyID          string `json:"key_id"`
+	ASCIIArmor     string `json:"ascii_armor"`
+	TrustSignature string `json:"trust_signature"`
+	Source         string `json:"source"`
+	SourceURL      string `json:"source_url"`
 }
 
 type Versions struct {
