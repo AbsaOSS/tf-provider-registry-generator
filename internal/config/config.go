@@ -33,10 +33,6 @@ func NewConfig(base string) (c Config, err error) {
 	const repo = "REPOSITORY"
 	c = Config{}
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
-	if c.TargetDir == "" {
-		err = fmt.Errorf("empty %s", targetDir)
-		return
-	}
 	c.ArtifactDir = env.GetEnvAsStringOrFallback(artifactsDir, "")
 	if c.ArtifactDir == "" {
 		err = fmt.Errorf("empty %s", c.ArtifactDir)
