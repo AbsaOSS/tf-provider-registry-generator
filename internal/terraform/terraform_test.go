@@ -46,7 +46,7 @@ var greenConfig = config.Config{
 	Owner:       "absaoss",
 	Repository:  "terraform-provider-dummy",
 	GPGHome: "/Users/ab011th/.gnupg",
-	GPGFingerPrint: "run `gpg -k`",
+	GPGFingerPrint: "98BB728AEA035081148BE807489893F7C4B3758D",
 }
 
 func getDefaultPath() *location.Location {
