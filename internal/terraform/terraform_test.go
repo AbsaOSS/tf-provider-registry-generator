@@ -96,7 +96,7 @@ func TestGreenPath(t *testing.T) {
 	require.NoError(t, err)
 	provider, err := NewProvider(location)
 	require.NoError(t, err)
-	downloads,err := provider.GetDownloadInfo()
+	downloads, err := provider.GetDownloadInfo()
 	require.NoError(t, err)
 	_, err = storage.WritePlatformMetadata(downloads)
 	require.NoError(t, err)

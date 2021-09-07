@@ -11,10 +11,10 @@ import (
 	"github.com/k0da/tfreg-golang/internal/types"
 )
 
-// Provider retrieving proper path
+// Provider retrieving proper location
 type Provider struct {
 	namespace string
-	path      *location.Location
+	location  location.Locationer
 }
 
 type Storage interface {
@@ -23,16 +23,16 @@ type Storage interface {
 	WriteVersions(v types.Versions) (err error)
 }
 
-func NewProvider(path *location.Location) (provider *Provider, err error) {
+func NewProvider(l location.Locationer) (provider *Provider, err error) {
 	provider = new(Provider)
-	provider.path = path
+	provider.location = l
 	return
 }
 
 func (p *Provider) WritePlatformMetadata(downloads []types.Download) (path string, err error) {
 	var b []byte
 	for _, d := range downloads {
-		dir := p.path.DownloadsPath() + "/" + d.Os
+		dir := p.location.DownloadsPath() + "/" + d.Os
 		err = os.MkdirAll(dir, 0755)
 		if err != nil {
 			return
@@ -54,10 +54,10 @@ func (p *Provider) WritePlatformMetadata(downloads []types.Download) (path strin
 // if file doesn't exists, return empty Versions slice
 func (p *Provider) GetVersions() (v types.Versions, err error) {
 	v = types.Versions{}
-	if _, err := os.Stat(p.path.VersionsPath()); os.IsNotExist(err) {
+	if _, err := os.Stat(p.location.VersionsPath()); os.IsNotExist(err) {
 		return v, nil
 	}
-	data, err := os.ReadFile(p.path.VersionsPath())
+	data, err := os.ReadFile(p.location.VersionsPath())
 	if err != nil {
 		return
 	}
@@ -72,32 +72,32 @@ func (p *Provider) WriteVersions(v types.Versions) (err error) {
 		return
 	}
 	data, err := json.Marshal(v)
-	err = os.WriteFile(p.path.VersionsPath(), data, 0644)
+	err = os.WriteFile(p.location.VersionsPath(), data, 0644)
 	return
 }
 
 func (p *Provider) SaveBinaries() (err error) {
-	err = os.MkdirAll(p.path.BinariesPath(), 0755)
+	err = os.MkdirAll(p.location.BinariesPath(), 0755)
 	if err != nil {
 		return
 	}
-	for _, a := range p.path.GetArtifacts() {
+	for _, a := range p.location.GetArtifacts() {
 		err = p.copy(a.File)
 		if err != nil {
 			return err
 		}
 	}
-	err = p.copy(p.path.GetShaSumFile())
+	err = p.copy(p.location.GetShaSumFile())
 	if err != nil {
 		return err
 	}
-	err = p.copy(p.path.GetShaSumSignatureFile())
+	err = p.copy(p.location.GetShaSumSignatureFile())
 	return
 }
 
 func (p *Provider) copy(file string) (err error) {
-	src := p.path.ArtifactsPath() + "/" + file
-	dst := p.path.BinariesPath() + "/" + file
+	src := p.location.ArtifactsPath() + "/" + file
+	dst := p.location.BinariesPath() + "/" + file
 	log.Printf("copying file from %s to %s", src, dst)
 	_, err = Copy(src, dst)
 	return err

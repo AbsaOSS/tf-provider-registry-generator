@@ -68,14 +68,14 @@ func commit(c config.Config) {
 	gitEmail := []string{"config", "user.email", c.Email}
 	err = cmd.Run("git", gitEmail, c.Base)
 	checkError(err)
-	gitSetRemote := []string{"remote" ,"set-url", "origin", c.RepoURL}
+	gitSetRemote := []string{"remote", "set-url", "origin", c.RepoURL}
 	err = cmd.Run("git", gitSetRemote, c.Base)
 	checkError(err)
 	gitAdd := []string{"add", "./"}
 	err = cmd.Run("git", gitAdd, c.Base)
 	checkError(err)
 	gitCommit := []string{"commit", "-m", commitMsg}
-	err = cmd.Run("git",gitCommit, c.Base)
+	err = cmd.Run("git", gitCommit, c.Base)
 	checkError(err)
 	gitPush := []string{"push", "origin", c.Branch}
 	err = cmd.Run("git", gitPush, c.Base)

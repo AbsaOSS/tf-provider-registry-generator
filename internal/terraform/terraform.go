@@ -13,16 +13,16 @@ const protocolVersion = "5.2"
 
 type Provider struct {
 	Platforms []types.Platform
-	location  *location.Location
+	location  location.Locationer
 }
 
-func NewProvider(path *location.Location) (p *Provider, err error) {
-	if path == nil {
+func NewProvider(l location.Locationer) (p *Provider, err error) {
+	if l == nil {
 		err = fmt.Errorf("nil location provider")
 		return
 	}
 	p = new(Provider)
-	p.location = path
+	p.location = l
 	for _, a := range p.location.GetArtifacts() {
 		p.Platforms = append(p.Platforms, types.Platform{
 			Os:         a.Os,
@@ -63,7 +63,7 @@ func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 func (p *Provider) GenerateVersion() *types.Version {
 	version := &types.Version{}
 	version.Protocols = []string{protocolVersion}
-	version.Version = p.location.Version
+	version.Version = p.location.GetVersion()
 	for _, platform := range p.Platforms {
 		version.Platforms = append(version.Platforms, types.Platform{Os: platform.Os, Arch: platform.Arch})
 	}

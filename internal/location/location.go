@@ -8,11 +8,26 @@ import (
 	"github.com/k0da/tfreg-golang/internal/config"
 )
 
+type Locationer interface {
+	ArtifactsPath() string
+	TargetsPath() string
+	VersionsPath() string
+	DownloadsPath() string
+	BinariesPath() string
+	GPGPubring() string
+	UrlBinaries() string
+	GetArtifacts() []Artifact
+	GetShaSumFile() string
+	GetShaSumSignatureFile() string
+	GPGFingerprint() string
+	GetVersion() string
+}
+
 type Location struct {
 	artifacts []Artifact
 	config    config.Config
-	Name      string
-	Version   string
+	name      string
+	version   string
 }
 
 type Artifact struct {
@@ -44,8 +59,8 @@ func NewLocation(c config.Config) (p *Location, err error) {
 		err = fmt.Errorf("more than one provider found in %s (%v)", p.config.ArtifactDir, m)
 		return
 	}
-	p.Name = p.artifacts[0].Name
-	p.Version = p.artifacts[0].Version
+	p.name = p.artifacts[0].Name
+	p.version = p.artifacts[0].Version
 	return
 }
 
@@ -54,7 +69,7 @@ func (p *Location) root() string {
 }
 
 func (p *Location) providerRoot() string {
-	return p.root() + "/" + p.config.Namespace + "/" + p.Name
+	return p.root() + "/" + p.config.Namespace + "/" + p.name
 }
 
 func (p *Location) ArtifactsPath() string {
@@ -70,7 +85,7 @@ func (p *Location) VersionsPath() string {
 }
 
 func (p *Location) DownloadsPath() string {
-	return p.providerRoot() + "/" + p.Version + "/download"
+	return p.providerRoot() + "/" + p.version + "/download"
 }
 
 func (p *Location) BinariesPath() string {
@@ -91,17 +106,20 @@ func (p *Location) GetArtifacts() []Artifact {
 }
 
 func (p *Location) GetShaSumFile() string {
-	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS"
+	return "terraform-provider-" + p.name + "_" + p.version + "_SHA256SUMS"
 }
 
 func (p *Location) GetShaSumSignatureFile() string {
-	return "terraform-provider-" + p.Name + "_" + p.Version + "_SHA256SUMS.sig"
+	return "terraform-provider-" + p.name + "_" + p.version + "_SHA256SUMS.sig"
 }
 
 func (p *Location) GPGFingerprint() string {
 	return p.config.GPGFingerPrint
 }
 
+func (p *Location) GetVersion() string {
+	return p.version
+}
 
 // makes list of ArtifactsPath from files in the path
 func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
@@ -118,7 +136,7 @@ func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err erro
 	return
 }
 
-// parse Name from file like this: terraform-provider-dummy_1.2.5_linux_amd64.zip into artifact
+// parse name from file like this: terraform-provider-dummy_1.2.5_linux_amd64.zip into artifact
 func (p *Location) getArtifactInfo(fileName string) (a Artifact, err error) {
 	const prefix = "terraform-provider-"
 	if !strings.HasPrefix(fileName, prefix) {
