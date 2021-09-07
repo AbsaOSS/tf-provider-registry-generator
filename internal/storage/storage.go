@@ -17,7 +17,7 @@ type Provider struct {
 	location  location.ILocation
 }
 
-type Storage interface {
+type IStorage interface {
 	WritePlatformMetadata(download types.Download) (path string, err error)
 	GetVersions() (v types.Versions, err error)
 	WriteVersions(v types.Versions) (err error)

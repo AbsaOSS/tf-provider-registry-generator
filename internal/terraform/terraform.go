@@ -11,6 +11,11 @@ import (
 
 const protocolVersion = "5.2"
 
+type IProvider interface {
+	GetDownloadInfo() (downloads []types.Download, err error)
+	GenerateVersion() *types.Version
+}
+
 type Provider struct {
 	Platforms []types.Platform
 	location  location.ILocation

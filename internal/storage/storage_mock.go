@@ -11,7 +11,7 @@ import (
 	types "github.com/k0da/tfreg-golang/internal/types"
 )
 
-// MockStorage is a mock of Storage interface.
+// MockStorage is a mock of IStorage interface.
 type MockStorage struct {
 	ctrl     *gomock.Controller
 	recorder *MockStorageMockRecorder
