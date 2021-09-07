@@ -25,6 +25,14 @@ var defaultConfig = config.Config{
 	WebRoot:     "/",
 }
 
+//func provideLocationer(t *testing.T){
+//	ctrl := gomock.NewController(t)
+//	defer ctrl.Finish()
+//	m := location.NewMockLocationer(ctrl)
+//	m.EXPECT().ArtifactsPath().AnyTimes().Return("./../../test_data/source")
+//
+//}
+
 func getDefaultPath() *location.Location {
 	p, _ := location.NewLocation(defaultConfig)
 	return p

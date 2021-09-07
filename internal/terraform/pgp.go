@@ -2,6 +2,7 @@ package terraform
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 
@@ -32,6 +33,9 @@ func (p *Provider) ExtractPublicKey() (key *types.GPGPublicKey, err error) {
 		return
 	}
 	entity := findKey(entityList, p.location.GPGFingerprint())
+	if entity == nil {
+		return key, fmt.Errorf("nil entity for fingerprint %s", p.location.GPGFingerprint())
+	}
 	b := bytes.NewBuffer(nil)
 	w, err := armor.Encode(b, openpgp.PublicKeyType, nil)
 	if err != nil {
