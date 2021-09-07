@@ -81,7 +81,7 @@ func NewConfig(base string) (c Config, err error) {
 	c.GPGHome = home + "/.gnupg"
 	ghActor := env.GetEnvAsStringOrFallback(actor, "registry-action")
 	c.User = env.GetEnvAsStringOrFallback(user, ghActor)
-	c.Email = env.GetEnvAsStringOrFallback(email, ghActor + "@users.noreply.github.com")
+	c.Email = env.GetEnvAsStringOrFallback(email, ghActor+"@users.noreply.github.com")
 
 	return
 }

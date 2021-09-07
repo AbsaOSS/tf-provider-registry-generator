@@ -1,9 +1,12 @@
-package github
+package repo
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/k0da/tfreg-golang/internal/location"
 
 	"github.com/AbsaOSS/gopkg/shell"
 	"github.com/k0da/tfreg-golang/internal/config"
@@ -11,7 +14,26 @@ import (
 
 const commitMsg = "Generate Terraform registry"
 
-func Clone(c config.Config) (err error) {
+type IRepo interface {
+	Clone(c config.Config) (err error)
+	CommitAndPush(c config.Config) (err error)
+}
+
+type Github struct {
+	location location.ILocation
+}
+
+func NewGithub(location location.ILocation) (g *Github, err error) {
+	if location == nil {
+		return nil, fmt.Errorf("nil location")
+	}
+	g = &Github{
+		location: location,
+	}
+	return
+}
+
+func (g *Github) Clone(c config.Config) (err error) {
 	args := []string{"clone", "--branch", c.Branch, c.RepoURL, c.Base}
 	err = runGitCmd(args, "")
 	if err != nil {
@@ -31,7 +53,7 @@ func Clone(c config.Config) (err error) {
 	return nil
 }
 
-func CommitAndPush(c config.Config) (err error) {
+func (g *Github) CommitAndPush(c config.Config) (err error) {
 	lfsTrack := []string{"lfs", "track", "download/*"}
 	err = runGitCmd(lfsTrack, c.Base)
 

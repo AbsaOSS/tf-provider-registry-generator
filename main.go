@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/github"
-	pather "github.com/k0da/tfreg-golang/internal/location"
+	location "github.com/k0da/tfreg-golang/internal/location"
+	"github.com/k0da/tfreg-golang/internal/repo"
 	"github.com/k0da/tfreg-golang/internal/storage"
 	"github.com/k0da/tfreg-golang/internal/terraform"
 )
@@ -18,7 +18,7 @@ func checkError(err error) {
 
 func provider(c config.Config) {
 	// init
-	location, err := pather.NewLocation(c)
+	location, err := location.NewLocation(c)
 	checkError(err)
 	storage, err := storage.NewProvider(location)
 	checkError(err)
@@ -41,7 +41,11 @@ func provider(c config.Config) {
 func main() {
 	config, err := config.NewConfig("pages")
 	checkError(err)
-	github.Clone(config)
+	location, err := location.NewLocation(config)
+	checkError(err)
+	repo, err := repo.NewGithub(location)
+	checkError(err)
+	repo.Clone(config)
 	provider(config)
-	github.CommitAndPush(config)
+	repo.CommitAndPush(config)
 }

@@ -9,5 +9,5 @@ mocks:
 
 .PHONY: check
 check:
-	go test ./...
 	goimports -w ./
+	go test ./...

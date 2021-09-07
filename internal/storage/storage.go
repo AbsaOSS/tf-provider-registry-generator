@@ -14,7 +14,7 @@ import (
 // Provider retrieving proper location
 type Provider struct {
 	namespace string
-	location  location.Locationer
+	location  location.ILocation
 }
 
 type Storage interface {
@@ -23,7 +23,7 @@ type Storage interface {
 	WriteVersions(v types.Versions) (err error)
 }
 
-func NewProvider(l location.Locationer) (provider *Provider, err error) {
+func NewProvider(l location.ILocation) (provider *Provider, err error) {
 	provider = new(Provider)
 	provider.location = l
 	return

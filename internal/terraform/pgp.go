@@ -14,7 +14,7 @@ import (
 func findKey(keyring openpgp.EntityList, fpr string) *openpgp.Entity {
 	for _, entity := range keyring {
 		key := entity.PrimaryKey
-		s := fmt.Sprintf("%X",key.Fingerprint[:])
+		s := fmt.Sprintf("%X", key.Fingerprint[:])
 		if s == fpr {
 			return entity
 		}

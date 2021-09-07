@@ -8,7 +8,7 @@ import (
 	"github.com/k0da/tfreg-golang/internal/config"
 )
 
-type Locationer interface {
+type ILocation interface {
 	ArtifactsPath() string
 	TargetsPath() string
 	VersionsPath() string

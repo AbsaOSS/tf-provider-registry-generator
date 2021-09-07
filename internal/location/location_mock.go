@@ -10,7 +10,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockLocationer is a mock of Locationer interface.
+// MockLocationer is a mock of ILocation interface.
 type MockLocationer struct {
 	ctrl     *gomock.Controller
 	recorder *MockLocationerMockRecorder

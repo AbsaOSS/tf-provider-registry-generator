@@ -13,10 +13,10 @@ const protocolVersion = "5.2"
 
 type Provider struct {
 	Platforms []types.Platform
-	location  location.Locationer
+	location  location.ILocation
 }
 
-func NewProvider(l location.Locationer) (p *Provider, err error) {
+func NewProvider(l location.ILocation) (p *Provider, err error) {
 	if l == nil {
 		err = fmt.Errorf("nil location provider")
 		return
