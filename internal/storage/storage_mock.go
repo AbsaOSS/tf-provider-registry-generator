@@ -11,31 +11,31 @@ import (
 	types "github.com/k0da/tfreg-golang/internal/types"
 )
 
-// MockStorage is a mock of IStorage interface.
-type MockStorage struct {
+// MockIStorage is a mock of IStorage interface.
+type MockIStorage struct {
 	ctrl     *gomock.Controller
-	recorder *MockStorageMockRecorder
+	recorder *MockIStorageMockRecorder
 }
 
-// MockStorageMockRecorder is the mock recorder for MockStorage.
-type MockStorageMockRecorder struct {
-	mock *MockStorage
+// MockIStorageMockRecorder is the mock recorder for MockIStorage.
+type MockIStorageMockRecorder struct {
+	mock *MockIStorage
 }
 
-// NewMockStorage creates a new mock instance.
-func NewMockStorage(ctrl *gomock.Controller) *MockStorage {
-	mock := &MockStorage{ctrl: ctrl}
-	mock.recorder = &MockStorageMockRecorder{mock}
+// NewMockIStorage creates a new mock instance.
+func NewMockIStorage(ctrl *gomock.Controller) *MockIStorage {
+	mock := &MockIStorage{ctrl: ctrl}
+	mock.recorder = &MockIStorageMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockStorage) EXPECT() *MockStorageMockRecorder {
+func (m *MockIStorage) EXPECT() *MockIStorageMockRecorder {
 	return m.recorder
 }
 
 // GetVersions mocks base method.
-func (m *MockStorage) GetVersions() (types.Versions, error) {
+func (m *MockIStorage) GetVersions() (types.Versions, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetVersions")
 	ret0, _ := ret[0].(types.Versions)
@@ -44,13 +44,13 @@ func (m *MockStorage) GetVersions() (types.Versions, error) {
 }
 
 // GetVersions indicates an expected call of GetVersions.
-func (mr *MockStorageMockRecorder) GetVersions() *gomock.Call {
+func (mr *MockIStorageMockRecorder) GetVersions() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersions", reflect.TypeOf((*MockStorage)(nil).GetVersions))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersions", reflect.TypeOf((*MockIStorage)(nil).GetVersions))
 }
 
 // WritePlatformMetadata mocks base method.
-func (m *MockStorage) WritePlatformMetadata(download types.Download) (string, error) {
+func (m *MockIStorage) WritePlatformMetadata(download []types.Download) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WritePlatformMetadata", download)
 	ret0, _ := ret[0].(string)
@@ -59,13 +59,13 @@ func (m *MockStorage) WritePlatformMetadata(download types.Download) (string, er
 }
 
 // WritePlatformMetadata indicates an expected call of WritePlatformMetadata.
-func (mr *MockStorageMockRecorder) WritePlatformMetadata(download interface{}) *gomock.Call {
+func (mr *MockIStorageMockRecorder) WritePlatformMetadata(download interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritePlatformMetadata", reflect.TypeOf((*MockStorage)(nil).WritePlatformMetadata), download)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritePlatformMetadata", reflect.TypeOf((*MockIStorage)(nil).WritePlatformMetadata), download)
 }
 
 // WriteVersions mocks base method.
-func (m *MockStorage) WriteVersions(v types.Versions) error {
+func (m *MockIStorage) WriteVersions(v types.Versions) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WriteVersions", v)
 	ret0, _ := ret[0].(error)
@@ -73,7 +73,7 @@ func (m *MockStorage) WriteVersions(v types.Versions) error {
 }
 
 // WriteVersions indicates an expected call of WriteVersions.
-func (mr *MockStorageMockRecorder) WriteVersions(v interface{}) *gomock.Call {
+func (mr *MockIStorageMockRecorder) WriteVersions(v interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteVersions", reflect.TypeOf((*MockStorage)(nil).WriteVersions), v)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteVersions", reflect.TypeOf((*MockIStorage)(nil).WriteVersions), v)
 }

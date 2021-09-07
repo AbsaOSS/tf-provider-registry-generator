@@ -59,7 +59,7 @@ func getDefaultPath() *location.Location {
 func TestNewProviderParsing(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	m := storage.NewMockStorage(ctrl)
+	m := storage.NewMockIStorage(ctrl)
 	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
 	l, _ := location.NewLocation(defaultConfig)
@@ -74,7 +74,7 @@ func TestNewProviderParsing(t *testing.T) {
 func TestVersionFromProvider(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	m := storage.NewMockStorage(ctrl)
+	m := storage.NewMockIStorage(ctrl)
 	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
 	versions := types.Versions{}

@@ -10,31 +10,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockLocationer is a mock of ILocation interface.
-type MockLocationer struct {
+// MockILocation is a mock of ILocation interface.
+type MockILocation struct {
 	ctrl     *gomock.Controller
-	recorder *MockLocationerMockRecorder
+	recorder *MockILocationMockRecorder
 }
 
-// MockLocationerMockRecorder is the mock recorder for MockLocationer.
-type MockLocationerMockRecorder struct {
-	mock *MockLocationer
+// MockILocationMockRecorder is the mock recorder for MockILocation.
+type MockILocationMockRecorder struct {
+	mock *MockILocation
 }
 
-// NewMockLocationer creates a new mock instance.
-func NewMockLocationer(ctrl *gomock.Controller) *MockLocationer {
-	mock := &MockLocationer{ctrl: ctrl}
-	mock.recorder = &MockLocationerMockRecorder{mock}
+// NewMockILocation creates a new mock instance.
+func NewMockILocation(ctrl *gomock.Controller) *MockILocation {
+	mock := &MockILocation{ctrl: ctrl}
+	mock.recorder = &MockILocationMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockLocationer) EXPECT() *MockLocationerMockRecorder {
+func (m *MockILocation) EXPECT() *MockILocationMockRecorder {
 	return m.recorder
 }
 
 // ArtifactsPath mocks base method.
-func (m *MockLocationer) ArtifactsPath() string {
+func (m *MockILocation) ArtifactsPath() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ArtifactsPath")
 	ret0, _ := ret[0].(string)
@@ -42,13 +42,13 @@ func (m *MockLocationer) ArtifactsPath() string {
 }
 
 // ArtifactsPath indicates an expected call of ArtifactsPath.
-func (mr *MockLocationerMockRecorder) ArtifactsPath() *gomock.Call {
+func (mr *MockILocationMockRecorder) ArtifactsPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArtifactsPath", reflect.TypeOf((*MockLocationer)(nil).ArtifactsPath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArtifactsPath", reflect.TypeOf((*MockILocation)(nil).ArtifactsPath))
 }
 
 // BinariesPath mocks base method.
-func (m *MockLocationer) BinariesPath() string {
+func (m *MockILocation) BinariesPath() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "BinariesPath")
 	ret0, _ := ret[0].(string)
@@ -56,13 +56,13 @@ func (m *MockLocationer) BinariesPath() string {
 }
 
 // BinariesPath indicates an expected call of BinariesPath.
-func (mr *MockLocationerMockRecorder) BinariesPath() *gomock.Call {
+func (mr *MockILocationMockRecorder) BinariesPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BinariesPath", reflect.TypeOf((*MockLocationer)(nil).BinariesPath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BinariesPath", reflect.TypeOf((*MockILocation)(nil).BinariesPath))
 }
 
 // DownloadsPath mocks base method.
-func (m *MockLocationer) DownloadsPath() string {
+func (m *MockILocation) DownloadsPath() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DownloadsPath")
 	ret0, _ := ret[0].(string)
@@ -70,13 +70,13 @@ func (m *MockLocationer) DownloadsPath() string {
 }
 
 // DownloadsPath indicates an expected call of DownloadsPath.
-func (mr *MockLocationerMockRecorder) DownloadsPath() *gomock.Call {
+func (mr *MockILocationMockRecorder) DownloadsPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadsPath", reflect.TypeOf((*MockLocationer)(nil).DownloadsPath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadsPath", reflect.TypeOf((*MockILocation)(nil).DownloadsPath))
 }
 
 // GPGFingerprint mocks base method.
-func (m *MockLocationer) GPGFingerprint() string {
+func (m *MockILocation) GPGFingerprint() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GPGFingerprint")
 	ret0, _ := ret[0].(string)
@@ -84,13 +84,13 @@ func (m *MockLocationer) GPGFingerprint() string {
 }
 
 // GPGFingerprint indicates an expected call of GPGFingerprint.
-func (mr *MockLocationerMockRecorder) GPGFingerprint() *gomock.Call {
+func (mr *MockILocationMockRecorder) GPGFingerprint() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGFingerprint", reflect.TypeOf((*MockLocationer)(nil).GPGFingerprint))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGFingerprint", reflect.TypeOf((*MockILocation)(nil).GPGFingerprint))
 }
 
 // GPGPubring mocks base method.
-func (m *MockLocationer) GPGPubring() string {
+func (m *MockILocation) GPGPubring() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GPGPubring")
 	ret0, _ := ret[0].(string)
@@ -98,13 +98,13 @@ func (m *MockLocationer) GPGPubring() string {
 }
 
 // GPGPubring indicates an expected call of GPGPubring.
-func (mr *MockLocationerMockRecorder) GPGPubring() *gomock.Call {
+func (mr *MockILocationMockRecorder) GPGPubring() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGPubring", reflect.TypeOf((*MockLocationer)(nil).GPGPubring))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGPubring", reflect.TypeOf((*MockILocation)(nil).GPGPubring))
 }
 
 // GetArtifacts mocks base method.
-func (m *MockLocationer) GetArtifacts() []Artifact {
+func (m *MockILocation) GetArtifacts() []Artifact {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetArtifacts")
 	ret0, _ := ret[0].([]Artifact)
@@ -112,13 +112,13 @@ func (m *MockLocationer) GetArtifacts() []Artifact {
 }
 
 // GetArtifacts indicates an expected call of GetArtifacts.
-func (mr *MockLocationerMockRecorder) GetArtifacts() *gomock.Call {
+func (mr *MockILocationMockRecorder) GetArtifacts() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArtifacts", reflect.TypeOf((*MockLocationer)(nil).GetArtifacts))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArtifacts", reflect.TypeOf((*MockILocation)(nil).GetArtifacts))
 }
 
 // GetShaSumFile mocks base method.
-func (m *MockLocationer) GetShaSumFile() string {
+func (m *MockILocation) GetShaSumFile() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetShaSumFile")
 	ret0, _ := ret[0].(string)
@@ -126,13 +126,13 @@ func (m *MockLocationer) GetShaSumFile() string {
 }
 
 // GetShaSumFile indicates an expected call of GetShaSumFile.
-func (mr *MockLocationerMockRecorder) GetShaSumFile() *gomock.Call {
+func (mr *MockILocationMockRecorder) GetShaSumFile() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShaSumFile", reflect.TypeOf((*MockLocationer)(nil).GetShaSumFile))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShaSumFile", reflect.TypeOf((*MockILocation)(nil).GetShaSumFile))
 }
 
 // GetShaSumSignatureFile mocks base method.
-func (m *MockLocationer) GetShaSumSignatureFile() string {
+func (m *MockILocation) GetShaSumSignatureFile() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetShaSumSignatureFile")
 	ret0, _ := ret[0].(string)
@@ -140,13 +140,13 @@ func (m *MockLocationer) GetShaSumSignatureFile() string {
 }
 
 // GetShaSumSignatureFile indicates an expected call of GetShaSumSignatureFile.
-func (mr *MockLocationerMockRecorder) GetShaSumSignatureFile() *gomock.Call {
+func (mr *MockILocationMockRecorder) GetShaSumSignatureFile() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShaSumSignatureFile", reflect.TypeOf((*MockLocationer)(nil).GetShaSumSignatureFile))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetShaSumSignatureFile", reflect.TypeOf((*MockILocation)(nil).GetShaSumSignatureFile))
 }
 
 // GetVersion mocks base method.
-func (m *MockLocationer) GetVersion() string {
+func (m *MockILocation) GetVersion() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetVersion")
 	ret0, _ := ret[0].(string)
@@ -154,13 +154,13 @@ func (m *MockLocationer) GetVersion() string {
 }
 
 // GetVersion indicates an expected call of GetVersion.
-func (mr *MockLocationerMockRecorder) GetVersion() *gomock.Call {
+func (mr *MockILocationMockRecorder) GetVersion() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersion", reflect.TypeOf((*MockLocationer)(nil).GetVersion))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersion", reflect.TypeOf((*MockILocation)(nil).GetVersion))
 }
 
 // TargetsPath mocks base method.
-func (m *MockLocationer) TargetsPath() string {
+func (m *MockILocation) TargetsPath() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TargetsPath")
 	ret0, _ := ret[0].(string)
@@ -168,13 +168,13 @@ func (m *MockLocationer) TargetsPath() string {
 }
 
 // TargetsPath indicates an expected call of TargetsPath.
-func (mr *MockLocationerMockRecorder) TargetsPath() *gomock.Call {
+func (mr *MockILocationMockRecorder) TargetsPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TargetsPath", reflect.TypeOf((*MockLocationer)(nil).TargetsPath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TargetsPath", reflect.TypeOf((*MockILocation)(nil).TargetsPath))
 }
 
 // UrlBinaries mocks base method.
-func (m *MockLocationer) UrlBinaries() string {
+func (m *MockILocation) UrlBinaries() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UrlBinaries")
 	ret0, _ := ret[0].(string)
@@ -182,13 +182,13 @@ func (m *MockLocationer) UrlBinaries() string {
 }
 
 // UrlBinaries indicates an expected call of UrlBinaries.
-func (mr *MockLocationerMockRecorder) UrlBinaries() *gomock.Call {
+func (mr *MockILocationMockRecorder) UrlBinaries() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UrlBinaries", reflect.TypeOf((*MockLocationer)(nil).UrlBinaries))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UrlBinaries", reflect.TypeOf((*MockILocation)(nil).UrlBinaries))
 }
 
 // VersionsPath mocks base method.
-func (m *MockLocationer) VersionsPath() string {
+func (m *MockILocation) VersionsPath() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VersionsPath")
 	ret0, _ := ret[0].(string)
@@ -196,7 +196,7 @@ func (m *MockLocationer) VersionsPath() string {
 }
 
 // VersionsPath indicates an expected call of VersionsPath.
-func (mr *MockLocationerMockRecorder) VersionsPath() *gomock.Call {
+func (mr *MockILocationMockRecorder) VersionsPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VersionsPath", reflect.TypeOf((*MockLocationer)(nil).VersionsPath))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VersionsPath", reflect.TypeOf((*MockILocation)(nil).VersionsPath))
 }
