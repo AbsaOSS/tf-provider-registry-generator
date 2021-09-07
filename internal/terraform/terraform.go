@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k0da/tfreg-golang/internal/encryption"
+
 	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/types"
 )
@@ -19,15 +21,21 @@ type IProvider interface {
 type Provider struct {
 	Platforms []types.Platform
 	location  location.ILocation
+	gpg       encryption.IEncryption
 }
 
-func NewProvider(l location.ILocation) (p *Provider, err error) {
+func NewProvider(l location.ILocation, gpg encryption.IEncryption) (p *Provider, err error) {
+	if gpg == nil {
+		err = fmt.Errorf("nil encryption provider")
+		return
+	}
 	if l == nil {
 		err = fmt.Errorf("nil location provider")
 		return
 	}
 	p = new(Provider)
 	p.location = l
+	p.gpg = gpg
 	for _, a := range p.location.GetArtifacts() {
 		p.Platforms = append(p.Platforms, types.Platform{
 			Os:         a.Os,
@@ -55,7 +63,7 @@ func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 		d.ShasumsSignatureURL = url + p.location.GetShaSumSignatureFile()
 		d.ShasumsURL = url + p.location.GetShaSumFile()
 		// todo: d.SigningKeys = resolve keys
-		gpgPublicKey, err = p.ExtractPublicKey()
+		gpgPublicKey, err = p.gpg.ExtractPublicKey()
 		if err != nil {
 			return
 		}

@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/k0da/tfreg-golang/internal/encryption"
+
 	"github.com/k0da/tfreg-golang/internal/config"
 	location "github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/repo"
@@ -22,7 +24,9 @@ func provider(c config.Config) {
 	checkError(err)
 	storage, err := storage.NewProvider(location)
 	checkError(err)
-	provider, err := terraform.NewProvider(location)
+	gpg, err := encryption.NewGpg(location)
+	checkError(err)
+	provider, err := terraform.NewProvider(location, gpg)
 	checkError(err)
 	downloads, err := provider.GetDownloadInfo()
 	checkError(err)

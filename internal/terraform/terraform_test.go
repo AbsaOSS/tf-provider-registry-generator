@@ -5,6 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/k0da/tfreg-golang/internal/encryption"
+
 	"github.com/golang/mock/gomock"
 	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/location"
@@ -60,8 +62,9 @@ func TestNewProviderParsing(t *testing.T) {
 	m := storage.NewMockStorage(ctrl)
 	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
-	p, _ := location.NewLocation(defaultConfig)
-	provider, err := NewProvider(p)
+	l, _ := location.NewLocation(defaultConfig)
+	g, _ := encryption.NewGpg(l)
+	provider, err := NewProvider(l, g)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
 	assert.Equal(t, expectedProvider.Platforms[1].Arch, provider.Platforms[1].Arch, "expected Architecture %+v, but got: %+v", "arm64", expectedProvider.Platforms[1].Arch)
@@ -76,8 +79,9 @@ func TestVersionFromProvider(t *testing.T) {
 
 	versions := types.Versions{}
 	expVersions := types.Versions{}
-	p, _ := location.NewLocation(defaultConfig)
-	provider, err := NewProvider(p)
+	l, _ := location.NewLocation(defaultConfig)
+	g, _ := encryption.NewGpg(l)
+	provider, err := NewProvider(l, g)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
 	existing, _ := os.ReadFile(defaultConfig.ArtifactDir + "/existing.json")
@@ -96,7 +100,9 @@ func TestGreenPath(t *testing.T) {
 	require.NoError(t, err)
 	storage, err := storage.NewProvider(location)
 	require.NoError(t, err)
-	provider, err := NewProvider(location)
+	gpg, err := encryption.NewGpg(location)
+	require.NoError(t, err)
+	provider, err := NewProvider(location, gpg)
 	require.NoError(t, err)
 	downloads, err := provider.GetDownloadInfo()
 	require.NoError(t, err)
