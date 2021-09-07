@@ -12,27 +12,27 @@ import (
 )
 
 // Provider retrieving proper location
-type Provider struct {
+type Storage struct {
 	namespace string
 	location  location.ILocation
 }
 
 type IStorage interface {
-	WritePlatformMetadata(download types.Download) (path string, err error)
+	WritePlatformMetadata(download []types.Download) (path string, err error)
 	GetVersions() (v types.Versions, err error)
 	WriteVersions(v types.Versions) (err error)
 }
 
-func NewProvider(l location.ILocation) (provider *Provider, err error) {
-	provider = new(Provider)
+func NewStorage(l location.ILocation) (provider *Storage, err error) {
+	provider = new(Storage)
 	provider.location = l
 	return
 }
 
-func (p *Provider) WritePlatformMetadata(downloads []types.Download) (path string, err error) {
+func (s *Storage) WritePlatformMetadata(downloads []types.Download) (path string, err error) {
 	var b []byte
 	for _, d := range downloads {
-		dir := p.location.DownloadsPath() + "/" + d.Os
+		dir := s.location.DownloadsPath() + "/" + d.Os
 		err = os.MkdirAll(dir, 0755)
 		if err != nil {
 			return
@@ -52,12 +52,12 @@ func (p *Provider) WritePlatformMetadata(downloads []types.Download) (path strin
 
 // GetVersions takes versions.json and retreives Versions struct
 // if file doesn't exists, return empty Versions slice
-func (p *Provider) GetVersions() (v types.Versions, err error) {
+func (s *Storage) GetVersions() (v types.Versions, err error) {
 	v = types.Versions{}
-	if _, err := os.Stat(p.location.VersionsPath()); os.IsNotExist(err) {
+	if _, err := os.Stat(s.location.VersionsPath()); os.IsNotExist(err) {
 		return v, nil
 	}
-	data, err := os.ReadFile(p.location.VersionsPath())
+	data, err := os.ReadFile(s.location.VersionsPath())
 	if err != nil {
 		return
 	}
@@ -66,38 +66,38 @@ func (p *Provider) GetVersions() (v types.Versions, err error) {
 }
 
 // WriteVersions stores versions.json
-func (p *Provider) WriteVersions(v types.Versions) (err error) {
+func (s *Storage) WriteVersions(v types.Versions) (err error) {
 	if len(v.Versions) == 0 {
 		err = fmt.Errorf("empty versions")
 		return
 	}
 	data, err := json.Marshal(v)
-	err = os.WriteFile(p.location.VersionsPath(), data, 0644)
+	err = os.WriteFile(s.location.VersionsPath(), data, 0644)
 	return
 }
 
-func (p *Provider) SaveBinaries() (err error) {
-	err = os.MkdirAll(p.location.BinariesPath(), 0755)
+func (s *Storage) SaveBinaries() (err error) {
+	err = os.MkdirAll(s.location.BinariesPath(), 0755)
 	if err != nil {
 		return
 	}
-	for _, a := range p.location.GetArtifacts() {
-		err = p.copy(a.File)
+	for _, a := range s.location.GetArtifacts() {
+		err = s.copy(a.File)
 		if err != nil {
 			return err
 		}
 	}
-	err = p.copy(p.location.GetShaSumFile())
+	err = s.copy(s.location.GetShaSumFile())
 	if err != nil {
 		return err
 	}
-	err = p.copy(p.location.GetShaSumSignatureFile())
+	err = s.copy(s.location.GetShaSumSignatureFile())
 	return
 }
 
-func (p *Provider) copy(file string) (err error) {
-	src := p.location.ArtifactsPath() + "/" + file
-	dst := p.location.BinariesPath() + "/" + file
+func (s *Storage) copy(file string) (err error) {
+	src := s.location.ArtifactsPath() + "/" + file
+	dst := s.location.BinariesPath() + "/" + file
 	log.Printf("copying file from %s to %s", src, dst)
 	_, err = Copy(src, dst)
 	return err

@@ -22,7 +22,7 @@ func provider(c config.Config) {
 	// init
 	location, err := location.NewLocation(c)
 	checkError(err)
-	storage, err := storage.NewProvider(location)
+	storage, err := storage.NewStorage(location)
 	checkError(err)
 	gpg, err := encryption.NewGpg(location)
 	checkError(err)

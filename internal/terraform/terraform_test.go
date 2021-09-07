@@ -98,7 +98,7 @@ func TestGreenPath(t *testing.T) {
 	// init
 	location, err := location.NewLocation(greenConfig)
 	require.NoError(t, err)
-	storage, err := storage.NewProvider(location)
+	storage, err := storage.NewStorage(location)
 	require.NoError(t, err)
 	gpg, err := encryption.NewGpg(location)
 	require.NoError(t, err)

@@ -13,7 +13,7 @@ import (
 
 const protocolVersion = "5.2"
 
-type IProvider interface {
+type ITerraform interface {
 	GetDownloadInfo() (downloads []types.Download, err error)
 	GenerateVersion() *types.Version
 }

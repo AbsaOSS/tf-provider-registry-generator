@@ -41,7 +41,7 @@ func getDefaultPath() *location.Location {
 func TestCreatePlatformMetadata(t *testing.T) {
 	// arrange
 
-	fp, err := NewProvider(getDefaultPath())
+	fp, err := NewStorage(getDefaultPath())
 	require.NoError(t, err)
 	// act
 	path, err := fp.WritePlatformMetadata([]types.Download{linuxAmd64Download})
