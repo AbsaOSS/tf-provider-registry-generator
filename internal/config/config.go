@@ -41,7 +41,7 @@ func NewConfig(base string) (c Config, err error) {
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
 	c.ArtifactDir = env.GetEnvAsStringOrFallback(artifactsDir, "")
 	if c.ArtifactDir == "" {
-		err = fmt.Errorf("empty %s", c.ArtifactDir)
+		err = fmt.Errorf("empty %s", artifactsDir)
 		return
 	}
 	c.GPGFingerPrint = env.GetEnvAsStringOrFallback(gpgFingerprint, "")

@@ -44,9 +44,11 @@ var greenConfig = config.Config{
 	Branch:      "gh-pages",
 	WebRoot:     "/",
 	Owner:       "absaoss",
+	GPGFingerPrint: "A14326DBF606091EECC389A6DEA8E17F0769F5E6",
+	GPGHome:     "/Users/ab012ib/.gnupg",
 	Repository:  "terraform-provider-dummy",
-	GPGHome: "/Users/ab011th/.gnupg",
-	GPGFingerPrint: "98BB728AEA035081148BE807489893F7C4B3758D",
+	//GPGHome: "/Users/ab011th/.gnupg",
+	//GPGFingerPrint: "run `gpg -k`",
 }
 
 func getDefaultPath() *location.Location {
