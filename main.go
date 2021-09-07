@@ -62,10 +62,10 @@ func commit(c config.Config) {
 	gitAddAttr := []string{"add", ".gitattributes"}
 	err = cmd.Run("git", gitAddAttr, c.Base)
 	checkError(err)
-	gitUser := []string{"config", "user.name"}
+	gitUser := []string{"config", "user.name", c.User}
 	err = cmd.Run("git", gitUser, c.Base)
 	checkError(err)
-	gitEmail := []string{"config", "user.email"}
+	gitEmail := []string{"config", "user.email", c.Email}
 	err = cmd.Run("git", gitEmail, c.Base)
 	checkError(err)
 	gitSetRemote := []string{"remote" ,"set-url", "origin", c.RepoURL}

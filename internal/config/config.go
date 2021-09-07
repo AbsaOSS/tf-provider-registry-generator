@@ -17,6 +17,8 @@ type Config struct {
 	Owner          string
 	Repository     string
 	RepoURL        string
+	User           string
+	Email          string
 	GPGFingerPrint string
 	GPGHome        string
 }
@@ -32,6 +34,9 @@ func NewConfig(base string) (c Config, err error) {
 	const repoURL = "REPO_URL"
 	const ghToken = "GITHUB_TOKEN"
 	const repo = "REPOSITORY"
+	const user = "USERNAME"
+	const email = "EMAIL"
+	const actor = "GITHUB_ACTOR"
 	c = Config{}
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
 	c.ArtifactDir = env.GetEnvAsStringOrFallback(artifactsDir, "")
@@ -74,5 +79,9 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty HOME")
 	}
 	c.GPGHome = home + "/.gnupg"
+	ghActor := env.GetEnvAsStringOrFallback(actor, "registry-action")
+	c.User = env.GetEnvAsStringOrFallback(user, ghActor)
+	c.Email = env.GetEnvAsStringOrFallback(email, ghActor + "@users.noreply.github.com")
+
 	return
 }
