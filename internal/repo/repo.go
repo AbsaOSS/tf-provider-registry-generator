@@ -39,13 +39,6 @@ func (g *Github) Clone() (err error) {
 }
 
 func (g *Github) CommitAndPush() (err error) {
-	// todo: fix location
-	lfsTrack := []string{"lfs", "track", "download/*"}
-	err = runGitCmd(lfsTrack, g.location.GetConfig().Base)
-
-	gitAddAttr := []string{"add", ".gitattributes"}
-	err = runGitCmd(gitAddAttr, g.location.GetConfig().Base)
-
 	gitUser := []string{"config", "user.name", g.location.GetConfig().User}
 	err = runGitCmd(gitUser, g.location.GetConfig().Base)
 

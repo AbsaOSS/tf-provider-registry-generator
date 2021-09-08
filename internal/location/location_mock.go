@@ -48,20 +48,6 @@ func (mr *MockILocationMockRecorder) ArtifactsPath() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ArtifactsPath", reflect.TypeOf((*MockILocation)(nil).ArtifactsPath))
 }
 
-// BinariesPath mocks base method.
-func (m *MockILocation) BinariesPath() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BinariesPath")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// BinariesPath indicates an expected call of BinariesPath.
-func (mr *MockILocationMockRecorder) BinariesPath() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BinariesPath", reflect.TypeOf((*MockILocation)(nil).BinariesPath))
-}
-
 // DownloadsPath mocks base method.
 func (m *MockILocation) DownloadsPath() string {
 	m.ctrl.T.Helper()

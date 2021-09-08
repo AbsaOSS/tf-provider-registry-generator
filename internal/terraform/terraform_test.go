@@ -106,8 +106,6 @@ func TestGreenPath(t *testing.T) {
 	versions.Versions = append(versions.Versions, *version)
 	err = storage.WriteVersions(versions)
 	require.NoError(t, err)
-	err = storage.SaveBinaries()
-	require.NoError(t, err)
 	// todo: make assertions here
 }
 

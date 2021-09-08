@@ -88,11 +88,6 @@ func (e *Etl) Run() (err error) {
 	if err != nil {
 		return
 	}
-	log.Printf("Copying binaries")
-	err = e.storage.SaveBinaries()
-	if err != nil {
-		return
-	}
 
 	log.Printf("Pushing")
 	err = e.repo.CommitAndPush()

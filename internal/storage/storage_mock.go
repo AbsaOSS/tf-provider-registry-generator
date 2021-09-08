@@ -49,20 +49,6 @@ func (mr *MockIStorageMockRecorder) GetVersions() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersions", reflect.TypeOf((*MockIStorage)(nil).GetVersions))
 }
 
-// SaveBinaries mocks base method.
-func (m *MockIStorage) SaveBinaries() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveBinaries")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SaveBinaries indicates an expected call of SaveBinaries.
-func (mr *MockIStorageMockRecorder) SaveBinaries() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveBinaries", reflect.TypeOf((*MockIStorage)(nil).SaveBinaries))
-}
-
 // WritePlatformMetadata mocks base method.
 func (m *MockIStorage) WritePlatformMetadata(download []types.Download) (string, error) {
 	m.ctrl.T.Helper()

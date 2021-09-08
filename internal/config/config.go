@@ -31,7 +31,6 @@ func NewConfig(base string) (c Config, err error) {
 	const gpgKeyID = "GPG_KEYID"
 	const branch = "BRANCH"
 	const webRoot = "WEB_ROOT"
-	const repoURL = "REPO_URL"
 	const ghToken = "TOKEN"
 	const repo = "REPOSITORY"
 	const user = "USERNAME"
@@ -63,7 +62,13 @@ func NewConfig(base string) (c Config, err error) {
 		return
 	}
 	c.Owner = orgRepo[0]
-	c.Repository = env.GetEnvAsStringOrFallback(repo, orgRepo[1])
+	c.Repository = orgRepo[1]
+
+	targetRepo := env.GetEnvAsStringOrFallback(repo, "")
+	if targetRepo == "" {
+		err = fmt.Errorf("empty %s", repo)
+		return
+	}
 
 	c.WebRoot = env.GetEnvAsStringOrFallback(webRoot, "/")
 	c.Namespace = env.GetEnvAsStringOrFallback(namespace, c.Owner)
@@ -72,8 +77,7 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty token")
 		return
 	}
-	fallbackRepo := fmt.Sprintf("https://x-access-token:%s@github.com/%s/%s", token, c.Owner, c.Repository)
-	c.RepoURL = env.GetEnvAsStringOrFallback(repoURL, fallbackRepo)
+	c.RepoURL = fmt.Sprintf("https://x-access-token:%s@github.com/%s/%s", token, c.Owner, targetRepo)
 	if base == "" {
 		err = fmt.Errorf("empty base")
 		return
