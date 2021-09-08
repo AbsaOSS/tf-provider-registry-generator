@@ -24,27 +24,27 @@ type Config struct {
 }
 
 func NewConfig(base string) (c Config, err error) {
-	const targetDir = "TARGET_DIR"
-	const artifactsDir = "ARTIFACTS_DIR"
-	const namespace = "NAMESPACE"
+	const targetDir = "INPUT_TARGET_DIR"
+	const artifactsDir = "INPUT_ARTIFACTS_DIR"
+	const namespace = "INPUT_NAMESPACE"
 	const gpgArmor = "INPUT_GPG_ASCII_ARMOR"
 	const gpgKeyID = "INPUT_GPG_KEYID"
-	const branch = "BRANCH"
-	const githubRepo = "GITHUB_REPOSITORY"
+	const branch = "INPUT_BRANCH"
 	const webRoot = "WEB_ROOT"
 	const repoURL = "REPO_URL"
-	const ghToken = "GITHUB_TOKEN"
-	const repo = "REPOSITORY"
-	const user = "USERNAME"
-	const email = "EMAIL"
+	const ghToken = "INPUT_TOKEN"
+	const repo = "INPUT_REPOSITORY"
+	const user = "INPUT_USERNAME"
+	const email = "INPUT_EMAIL"
 	const actor = "GITHUB_ACTOR"
+	const githubRepo = "GITHUB_REPOSITORY"
 	c = Config{}
+	// with defaults
+	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")
+	c.ArtifactDir = env.GetEnvAsStringOrFallback(artifactsDir, "dist")
+
+	// mandatory
 	c.TargetDir = env.GetEnvAsStringOrFallback(targetDir, "")
-	c.ArtifactDir = env.GetEnvAsStringOrFallback(artifactsDir, "")
-	if c.ArtifactDir == "" {
-		err = fmt.Errorf("empty %s", artifactsDir)
-		return
-	}
 	c.GPGKeyID = env.GetEnvAsStringOrFallback(gpgKeyID, "")
 	if c.GPGKeyID == "" {
 		err = fmt.Errorf("empty %s", gpgKeyID)
@@ -55,7 +55,6 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty %s", gpgArmor)
 		return
 	}
-	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")
 	ghRepo := env.GetEnvAsStringOrFallback(githubRepo, "")
 
 	orgRepo := strings.Split(ghRepo, "/")

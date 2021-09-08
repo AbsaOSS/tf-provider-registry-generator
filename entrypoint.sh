@@ -21,35 +21,19 @@ if [[ -z "$REPOSITORY" ]]; then
 fi
 
 if [[ -z "$REPO_URL" ]]; then
-    REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${OWNER}/${REPOSITORY}"
+    REPO_URL="https://x-access-token:${TOKEN}@github.com/${OWNER}/${REPOSITORY}"
 fi
 
-if [[ -z "$ARTIFACTS_DIR" ]]; then
-    ARTIFACTS_DIR="artifacts"
+if [[ -z "$INPUT_NAMESPACE" ]]; then
+  INPUT_NAMESPACE=${REPOSITORY}
 fi
 
-if [[ -z "$BRANCH" ]]; then
-    BRANCH="gh-pages"
+if [[ -z "$INPUT_USERNAME" ]]; then
+    INPUT__USERNAME="${GITHUB_ACTOR}"
 fi
 
-if [[ -z "$WEB_ROOT" ]]; then
-  WEB_ROOT="/"
-fi
-
-if [[ -z "$NAMESPACE" ]]; then
-  NAMESPACE=${REPOSITORY}
-fi
-
-if [[ -z "$REGISTRY_URL" ]]; then
-    REGISTRY_URL="https://${OWNER}.github.io/${REPOSITORY}"
-fi
-
-if [[ -z "$COMMIT_USERNAME" ]]; then
-    COMMIT_USERNAME="${GITHUB_ACTOR}"
-fi
-
-if [[ -z "$COMMIT_EMAIL" ]]; then
-    COMMIT_EMAIL="${GITHUB_ACTOR}@users.noreply.github.com"
+if [[ -z "$INPUT_EMAIL" ]]; then
+    INPUT_EMAIL="${GITHUB_ACTOR}@users.noreply.github.com"
 fi
 
 /usr/bin/tfreg-golang
