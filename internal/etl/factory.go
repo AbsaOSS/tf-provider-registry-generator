@@ -29,8 +29,8 @@ type Batch struct {
 	terraform terraform.ITerraform
 }
 
-func (e *EtlFactory) Get() (b Batch, err error) {
-	b = Batch{}
+func (e *EtlFactory) Get() (b *Batch, err error) {
+	b = new(Batch)
 	b.location, err = location.NewLocation(e.config)
 	if err != nil {
 		return
