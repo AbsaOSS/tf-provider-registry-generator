@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	config "github.com/k0da/tfreg-golang/internal/config"
 )
 
 // MockILocation is a mock of ILocation interface.
@@ -75,34 +76,6 @@ func (mr *MockILocationMockRecorder) DownloadsPath() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadsPath", reflect.TypeOf((*MockILocation)(nil).DownloadsPath))
 }
 
-// GPGFingerprint mocks base method.
-func (m *MockILocation) GPGFingerprint() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GPGFingerprint")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// GPGFingerprint indicates an expected call of GPGFingerprint.
-func (mr *MockILocationMockRecorder) GPGFingerprint() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGFingerprint", reflect.TypeOf((*MockILocation)(nil).GPGFingerprint))
-}
-
-// GPGPubring mocks base method.
-func (m *MockILocation) GPGPubring() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GPGPubring")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// GPGPubring indicates an expected call of GPGPubring.
-func (mr *MockILocationMockRecorder) GPGPubring() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GPGPubring", reflect.TypeOf((*MockILocation)(nil).GPGPubring))
-}
-
 // GetArtifacts mocks base method.
 func (m *MockILocation) GetArtifacts() []Artifact {
 	m.ctrl.T.Helper()
@@ -115,6 +88,20 @@ func (m *MockILocation) GetArtifacts() []Artifact {
 func (mr *MockILocationMockRecorder) GetArtifacts() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArtifacts", reflect.TypeOf((*MockILocation)(nil).GetArtifacts))
+}
+
+// GetConfig mocks base method.
+func (m *MockILocation) GetConfig() config.Config {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConfig")
+	ret0, _ := ret[0].(config.Config)
+	return ret0
+}
+
+// GetConfig indicates an expected call of GetConfig.
+func (mr *MockILocationMockRecorder) GetConfig() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConfig", reflect.TypeOf((*MockILocation)(nil).GetConfig))
 }
 
 // GetShaSumFile mocks base method.
@@ -171,6 +158,20 @@ func (m *MockILocation) TargetsPath() string {
 func (mr *MockILocationMockRecorder) TargetsPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TargetsPath", reflect.TypeOf((*MockILocation)(nil).TargetsPath))
+}
+
+// TerraformJSONPath mocks base method.
+func (m *MockILocation) TerraformJSONPath() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TerraformJSONPath")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// TerraformJSONPath indicates an expected call of TerraformJSONPath.
+func (mr *MockILocationMockRecorder) TerraformJSONPath() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerraformJSONPath", reflect.TypeOf((*MockILocation)(nil).TerraformJSONPath))
 }
 
 // UrlBinaries mocks base method.

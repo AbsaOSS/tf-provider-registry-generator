@@ -34,6 +34,20 @@ func (m *MockITerraform) EXPECT() *MockITerraformMockRecorder {
 	return m.recorder
 }
 
+// GenerateTerraformJSON mocks base method.
+func (m *MockITerraform) GenerateTerraformJSON() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateTerraformJSON")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GenerateTerraformJSON indicates an expected call of GenerateTerraformJSON.
+func (mr *MockITerraformMockRecorder) GenerateTerraformJSON() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateTerraformJSON", reflect.TypeOf((*MockITerraform)(nil).GenerateTerraformJSON))
+}
+
 // GenerateVersion mocks base method.
 func (m *MockITerraform) GenerateVersion() *types.Version {
 	m.ctrl.T.Helper()

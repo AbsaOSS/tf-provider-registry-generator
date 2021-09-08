@@ -8,26 +8,27 @@ import (
 )
 
 type Config struct {
-	TargetDir      string
-	Namespace      string
-	ArtifactDir    string
-	Branch         string
-	WebRoot        string
-	Base           string
-	Owner          string
-	Repository     string
-	RepoURL        string
-	User           string
-	Email          string
-	GPGFingerPrint string
-	GPGHome        string
+	TargetDir   string
+	Namespace   string
+	ArtifactDir string
+	Branch      string
+	WebRoot     string
+	Base        string
+	Owner       string
+	Repository  string
+	RepoURL     string
+	User        string
+	Email       string
+	GPGKeyID    string
+	GPGArmor    string
 }
 
 func NewConfig(base string) (c Config, err error) {
 	const targetDir = "TARGET_DIR"
 	const artifactsDir = "ARTIFACTS_DIR"
 	const namespace = "NAMESPACE"
-	const gpgFingerprint = "GPG_FINGERPRINT"
+	const gpgArmor = "INPUT_GPG_ASCII_ARMOR"
+	const gpgKeyID = "INPUT_GPG_KEYID"
 	const branch = "BRANCH"
 	const githubRepo = "GITHUB_REPOSITORY"
 	const webRoot = "WEB_ROOT"
@@ -44,9 +45,14 @@ func NewConfig(base string) (c Config, err error) {
 		err = fmt.Errorf("empty %s", artifactsDir)
 		return
 	}
-	c.GPGFingerPrint = env.GetEnvAsStringOrFallback(gpgFingerprint, "")
-	if c.GPGFingerPrint == "" {
-		err = fmt.Errorf("empty %s", gpgFingerprint)
+	c.GPGKeyID = env.GetEnvAsStringOrFallback(gpgKeyID, "")
+	if c.GPGKeyID == "" {
+		err = fmt.Errorf("empty %s", gpgKeyID)
+		return
+	}
+	c.GPGArmor = env.GetEnvAsStringOrFallback(gpgArmor, "")
+	if c.GPGArmor == "" {
+		err = fmt.Errorf("empty %s", gpgArmor)
 		return
 	}
 	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")
@@ -74,11 +80,6 @@ func NewConfig(base string) (c Config, err error) {
 		return
 	}
 	c.Base = base
-	home := env.GetEnvAsStringOrFallback("HOME", "")
-	if home == "" {
-		err = fmt.Errorf("empty HOME")
-	}
-	c.GPGHome = home + "/.gnupg"
 	ghActor := env.GetEnvAsStringOrFallback(actor, "registry-action")
 	c.User = env.GetEnvAsStringOrFallback(user, ghActor)
 	c.Email = env.GetEnvAsStringOrFallback(email, ghActor+"@users.noreply.github.com")

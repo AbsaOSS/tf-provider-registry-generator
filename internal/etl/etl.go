@@ -2,7 +2,6 @@ package etl
 
 import (
 	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/encryption"
 	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/repo"
 	"github.com/k0da/tfreg-golang/internal/storage"
@@ -37,11 +36,7 @@ func NewEtl(c config.Config) (etl *Etl, err error) {
 	if err != nil {
 		return
 	}
-	gpg, err := encryption.NewGpg(etl.location)
-	if err != nil {
-		return
-	}
-	etl.terraform, err = terraform.NewTerraformProvider(etl.location, gpg)
+	etl.terraform, err = terraform.NewTerraformProvider(etl.location)
 	return
 }
 

@@ -5,8 +5,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/k0da/tfreg-golang/internal/encryption"
-
 	"github.com/golang/mock/gomock"
 	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/location"
@@ -40,15 +38,13 @@ var defaultConfig = config.Config{
 
 var greenConfig = config.Config{
 	// todo: find a system to store / restore files in test
-	Base:           "./../../test_data/target_green",
-	ArtifactDir:    "./../../test_data/source",
-	Namespace:      "absaoss",
-	Branch:         "gh-pages",
-	WebRoot:        "/",
-	Owner:          "absaoss",
-	Repository:     "terraform-provider-dummy",
-	GPGHome:        "/Users/ab011th/.gnupg",
-	GPGFingerPrint: "98BB728AEA035081148BE807489893F7C4B3758D",
+	Base:        "./../../test_data/target_green",
+	ArtifactDir: "./../../test_data/source",
+	Namespace:   "absaoss",
+	Branch:      "gh-pages",
+	WebRoot:     "/",
+	Owner:       "absaoss",
+	Repository:  "terraform-provider-dummy",
 }
 
 func getDefaultPath() *location.Location {
@@ -63,8 +59,7 @@ func TestNewProviderParsing(t *testing.T) {
 	m.EXPECT().WritePlatformMetadata(gomock.Any()).AnyTimes().Return(defaultConfig.Base, nil)
 
 	l, _ := location.NewLocation(defaultConfig)
-	g, _ := encryption.NewGpg(l)
-	provider, err := NewTerraformProvider(l, g)
+	provider, err := NewTerraformProvider(l)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
 	assert.Equal(t, expectedProvider.Platforms[1].Arch, provider.Platforms[1].Arch, "expected Architecture %+v, but got: %+v", "arm64", expectedProvider.Platforms[1].Arch)
@@ -80,8 +75,7 @@ func TestVersionFromProvider(t *testing.T) {
 	versions := types.Versions{}
 	expVersions := types.Versions{}
 	l, _ := location.NewLocation(defaultConfig)
-	g, _ := encryption.NewGpg(l)
-	provider, err := NewTerraformProvider(l, g)
+	provider, err := NewTerraformProvider(l)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
 	existing, _ := os.ReadFile(defaultConfig.ArtifactDir + "/existing.json")
@@ -100,9 +94,7 @@ func TestGreenPath(t *testing.T) {
 	require.NoError(t, err)
 	storage, err := storage.NewStorage(location)
 	require.NoError(t, err)
-	gpg, err := encryption.NewGpg(location)
-	require.NoError(t, err)
-	provider, err := NewTerraformProvider(location, gpg)
+	provider, err := NewTerraformProvider(location)
 	require.NoError(t, err)
 	downloads, err := provider.GetDownloadInfo()
 	require.NoError(t, err)
