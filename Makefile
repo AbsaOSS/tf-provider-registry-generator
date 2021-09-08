@@ -8,6 +8,7 @@ mocks:
 	mockgen -source=internal/location/location.go -destination=internal/location/location_mock.go -package=location
 	mockgen -source=internal/terraform/terraform.go -destination=internal/terraform/terraform_mock.go -package=terraform
 	mockgen -source=internal/repo/repo.go -destination=internal/repo/repo_mock.go -package=repo
+	mockgen -source=internal/etl/factory.go -destination=internal/etl/factory_mock.go -package=etl
 
 .PHONY: check
 check:

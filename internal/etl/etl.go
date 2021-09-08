@@ -21,10 +21,13 @@ type Etl struct {
 	terraform terraform.ITerraform
 }
 
+
 func NewEtl2(location location.ILocation, storage storage.IStorage, repo repo.IRepo, terraform terraform.ITerraform) (etl *Etl, err error) {
 
 	return
 }
+
+
 
 func NewEtl(c config.Config) (etl *Etl, err error) {
 	// todo: Dependency injection
