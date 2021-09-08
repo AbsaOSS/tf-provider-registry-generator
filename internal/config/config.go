@@ -24,18 +24,18 @@ type Config struct {
 }
 
 func NewConfig(base string) (c Config, err error) {
-	const targetDir = "INPUT_TARGET_DIR"
-	const artifactsDir = "INPUT_ARTIFACTS_DIR"
-	const namespace = "INPUT_NAMESPACE"
-	const gpgArmor = "INPUT_GPG_ASCII_ARMOR"
-	const gpgKeyID = "INPUT_GPG_KEYID"
-	const branch = "INPUT_BRANCH"
+	const targetDir = "TARGET_DIR"
+	const artifactsDir = "ARTIFACTS_DIR"
+	const namespace = "NAMESPACE"
+	const gpgArmor = "GPG_ASCII_ARMOR"
+	const gpgKeyID = "GPG_KEYID"
+	const branch = "BRANCH"
 	const webRoot = "WEB_ROOT"
 	const repoURL = "REPO_URL"
-	const ghToken = "INPUT_TOKEN"
-	const repo = "INPUT_REPOSITORY"
-	const user = "INPUT_USERNAME"
-	const email = "INPUT_EMAIL"
+	const ghToken = "TOKEN"
+	const repo = "REPOSITORY"
+	const user = "USERNAME"
+	const email = "EMAIL"
 	const actor = "GITHUB_ACTOR"
 	const githubRepo = "GITHUB_REPOSITORY"
 	c = Config{}
