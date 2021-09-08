@@ -21,6 +21,7 @@ type IStorage interface {
 	WritePlatformMetadata(download []types.Download) (path string, err error)
 	GetVersions() (v types.Versions, err error)
 	WriteVersions(v types.Versions) (err error)
+	SaveBinaries() (err error)
 }
 
 func NewStorage(l location.ILocation) (provider *Storage, err error) {
