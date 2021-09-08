@@ -3,6 +3,7 @@ package terraform
 import (
 	"crypto/sha256"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/k0da/tfreg-golang/internal/encryption"
@@ -16,15 +17,16 @@ const protocolVersion = "5.2"
 type ITerraform interface {
 	GetDownloadInfo() (downloads []types.Download, err error)
 	GenerateVersion() *types.Version
+	GenerateTerraformJSON() error
 }
 
-type Provider struct {
+type TerraformProvider struct {
 	Platforms []types.Platform
 	location  location.ILocation
 	gpg       encryption.IEncryption
 }
 
-func NewProvider(l location.ILocation, gpg encryption.IEncryption) (p *Provider, err error) {
+func NewTerraformProvider(l location.ILocation, gpg encryption.IEncryption) (p *TerraformProvider, err error) {
 	if gpg == nil {
 		err = fmt.Errorf("nil encryption provider")
 		return
@@ -33,7 +35,7 @@ func NewProvider(l location.ILocation, gpg encryption.IEncryption) (p *Provider,
 		err = fmt.Errorf("nil location provider")
 		return
 	}
-	p = new(Provider)
+	p = new(TerraformProvider)
 	p.location = l
 	p.gpg = gpg
 	for _, a := range p.location.GetArtifacts() {
@@ -46,7 +48,7 @@ func NewProvider(l location.ILocation, gpg encryption.IEncryption) (p *Provider,
 	return
 }
 
-func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
+func (p *TerraformProvider) GetDownloadInfo() (downloads []types.Download, err error) {
 	// todo: testurl
 	var url = p.location.UrlBinaries()
 	var gpgPublicKey *types.GPGPublicKey
@@ -73,7 +75,7 @@ func (p *Provider) GetDownloadInfo() (downloads []types.Download, err error) {
 	return
 }
 
-func (p *Provider) GenerateVersion() *types.Version {
+func (p *TerraformProvider) GenerateVersion() *types.Version {
 	version := &types.Version{}
 	version.Protocols = []string{protocolVersion}
 	version.Version = p.location.GetVersion()
@@ -81,6 +83,13 @@ func (p *Provider) GenerateVersion() *types.Version {
 		version.Platforms = append(version.Platforms, types.Platform{Os: platform.Os, Arch: platform.Arch})
 	}
 	return version
+}
+
+func (p *TerraformProvider) GenerateTerraformJSON() (err error) {
+	const dataPrefix = "---\npermalink: /.well-known/terraform.json\n---\n"
+	var data = fmt.Sprintf("%s{\"providers.v1\":\"%s\"}\n", dataPrefix, p.location.GetConfig().WebRoot)
+	err = ioutil.WriteFile(p.location.TerraformJSONPath(), []byte(data), 0644)
+	return
 }
 
 func getSHA256(path string) (string, error) {

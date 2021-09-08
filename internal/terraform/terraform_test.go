@@ -24,7 +24,7 @@ const (
 var platformAmd64 = types.Platform{Os: "linux", Arch: "amd64", FileOrigin: amd64FileName}
 var platformArm64 = types.Platform{Os: "linux", Arch: "arm64", FileOrigin: arm64FileName}
 
-var expectedProvider = &Provider{
+var expectedProvider = &TerraformProvider{
 	location:  getDefaultPath(),
 	Platforms: []types.Platform{platformAmd64, platformArm64},
 }
@@ -64,7 +64,7 @@ func TestNewProviderParsing(t *testing.T) {
 
 	l, _ := location.NewLocation(defaultConfig)
 	g, _ := encryption.NewGpg(l)
-	provider, err := NewProvider(l, g)
+	provider, err := NewTerraformProvider(l, g)
 	require.NoError(t, err)
 	assert.Equal(t, expectedProvider.Platforms[0].Arch, provider.Platforms[0].Arch, "expected Architecture %+v, but got: %+v", "amd64", expectedProvider.Platforms[0].Arch)
 	assert.Equal(t, expectedProvider.Platforms[1].Arch, provider.Platforms[1].Arch, "expected Architecture %+v, but got: %+v", "arm64", expectedProvider.Platforms[1].Arch)
@@ -81,7 +81,7 @@ func TestVersionFromProvider(t *testing.T) {
 	expVersions := types.Versions{}
 	l, _ := location.NewLocation(defaultConfig)
 	g, _ := encryption.NewGpg(l)
-	provider, err := NewProvider(l, g)
+	provider, err := NewTerraformProvider(l, g)
 	require.NoError(t, err)
 	version := provider.GenerateVersion()
 	existing, _ := os.ReadFile(defaultConfig.ArtifactDir + "/existing.json")
@@ -102,7 +102,7 @@ func TestGreenPath(t *testing.T) {
 	require.NoError(t, err)
 	gpg, err := encryption.NewGpg(location)
 	require.NoError(t, err)
-	provider, err := NewProvider(location, gpg)
+	provider, err := NewTerraformProvider(location, gpg)
 	require.NoError(t, err)
 	downloads, err := provider.GetDownloadInfo()
 	require.NoError(t, err)

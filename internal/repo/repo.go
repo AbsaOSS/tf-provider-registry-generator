@@ -2,14 +2,11 @@ package repo
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 
 	"github.com/k0da/tfreg-golang/internal/location"
 
 	"github.com/AbsaOSS/gopkg/shell"
-	"github.com/k0da/tfreg-golang/internal/config"
 )
 
 const commitMsg = "Generate Terraform registry"
@@ -21,66 +18,51 @@ type IRepo interface {
 
 type Github struct {
 	location location.ILocation
-	config config.Config
 }
 
-func NewGithub(c config.Config, location location.ILocation) (g *Github, err error) {
+func NewGithub(location location.ILocation) (g *Github, err error) {
 	//todo: remove config
 	if location == nil {
 		return nil, fmt.Errorf("nil location")
 	}
 	g = &Github{
 		location: location,
-		config: c,
 	}
 	return
 }
 
 func (g *Github) Clone() (err error) {
 	// todo: use location instead of config
-	args := []string{"clone", "--branch", g.config.Branch, g.config.RepoURL, g.config.Base}
+	args := []string{"clone", "--branch", g.location.GetConfig().Branch, g.location.GetConfig().RepoURL, g.location.GetConfig().Base}
 	err = runGitCmd(args, "")
-	if err != nil {
-		return
-	}
-	// to-do move to Location
-	data, err := ioutil.ReadFile("data/terraform.json")
-	if err != nil {
-		return
-	}
-	dst := g.config.Base + "/terraform.json"
-	ioutil.WriteFile(dst, data, 0644)
-	d1 := []byte("path: " + g.config.WebRoot)
-	os.MkdirAll(g.config.Base+"/_data", 0755)
-	os.WriteFile(g.config.Base+"/_data/root.yaml", d1, 0644)
-
-	return nil
+	return
 }
 
 func (g *Github) CommitAndPush() (err error) {
+	// todo: fix location
 	lfsTrack := []string{"lfs", "track", "download/*"}
-	err = runGitCmd(lfsTrack, g.config.Base)
+	err = runGitCmd(lfsTrack, g.location.GetConfig().Base)
 
 	gitAddAttr := []string{"add", ".gitattributes"}
-	err = runGitCmd(gitAddAttr, g.config.Base)
+	err = runGitCmd(gitAddAttr, g.location.GetConfig().Base)
 
-	gitUser := []string{"config", "user.name", g.config.User}
-	err = runGitCmd(gitUser, g.config.Base)
+	gitUser := []string{"config", "user.name", g.location.GetConfig().User}
+	err = runGitCmd(gitUser, g.location.GetConfig().Base)
 
-	gitEmail := []string{"config", "user.email", g.config.Email}
-	err = runGitCmd(gitEmail, g.config.Base)
+	gitEmail := []string{"config", "user.email", g.location.GetConfig().Email}
+	err = runGitCmd(gitEmail, g.location.GetConfig().Base)
 
-	gitSetRemote := []string{"remote", "set-url", "origin", g.config.RepoURL}
-	err = runGitCmd(gitSetRemote, g.config.Base)
+	gitSetRemote := []string{"remote", "set-url", "origin", g.location.GetConfig().RepoURL}
+	err = runGitCmd(gitSetRemote, g.location.GetConfig().Base)
 
 	gitAdd := []string{"add", "./"}
-	err = runGitCmd(gitAdd, g.config.Base)
+	err = runGitCmd(gitAdd, g.location.GetConfig().Base)
 
 	gitCommit := []string{"commit", "-m", commitMsg}
-	err = runGitCmd(gitCommit, g.config.Base)
+	err = runGitCmd(gitCommit, g.location.GetConfig().Base)
 
-	gitPush := []string{"push", "origin",g.config.Branch}
-	err = runGitCmd(gitPush, g.config.Base)
+	gitPush := []string{"push", "origin", g.location.GetConfig().Branch}
+	err = runGitCmd(gitPush, g.location.GetConfig().Base)
 
 	return
 }

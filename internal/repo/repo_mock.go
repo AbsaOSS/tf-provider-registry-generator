@@ -8,7 +8,6 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	config "github.com/k0da/tfreg-golang/internal/config"
 )
 
 // MockIRepo is a mock of IRepo interface.
@@ -35,29 +34,29 @@ func (m *MockIRepo) EXPECT() *MockIRepoMockRecorder {
 }
 
 // Clone mocks base method.
-func (m *MockIRepo) Clone(c config.Config) error {
+func (m *MockIRepo) Clone() error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Clone", c)
+	ret := m.ctrl.Call(m, "Clone")
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Clone indicates an expected call of Clone.
-func (mr *MockIRepoMockRecorder) Clone(c interface{}) *gomock.Call {
+func (mr *MockIRepoMockRecorder) Clone() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clone", reflect.TypeOf((*MockIRepo)(nil).Clone), c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clone", reflect.TypeOf((*MockIRepo)(nil).Clone))
 }
 
 // CommitAndPush mocks base method.
-func (m *MockIRepo) CommitAndPush(c config.Config) error {
+func (m *MockIRepo) CommitAndPush() error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CommitAndPush", c)
+	ret := m.ctrl.Call(m, "CommitAndPush")
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CommitAndPush indicates an expected call of CommitAndPush.
-func (mr *MockIRepoMockRecorder) CommitAndPush(c interface{}) *gomock.Call {
+func (mr *MockIRepoMockRecorder) CommitAndPush() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitAndPush", reflect.TypeOf((*MockIRepo)(nil).CommitAndPush), c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitAndPush", reflect.TypeOf((*MockIRepo)(nil).CommitAndPush))
 }

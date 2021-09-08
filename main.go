@@ -15,7 +15,7 @@ func checkError(err error) {
 
 func main() {
 	config, err := config.NewConfig("pages")
-	process,err  := etl.NewEtl(config)
+	process, err := etl.NewEtl(config)
 	checkError(err)
 	err = process.Run()
 	checkError(err)

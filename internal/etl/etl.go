@@ -14,10 +14,15 @@ type IEtl interface {
 }
 
 type Etl struct {
-	location location.ILocation
-	storage storage.IStorage
+	location  location.ILocation
+	storage   storage.IStorage
 	repo      repo.IRepo
 	terraform terraform.ITerraform
+}
+
+func NewEtl2(location location.ILocation, storage storage.IStorage, repo repo.IRepo, terraform terraform.ITerraform) (etl *Etl, err error) {
+
+	return
 }
 
 func NewEtl(c config.Config) (etl *Etl, err error) {
@@ -36,12 +41,17 @@ func NewEtl(c config.Config) (etl *Etl, err error) {
 	if err != nil {
 		return
 	}
-	etl.terraform, err = terraform.NewProvider(etl.location, gpg)
+	etl.terraform, err = terraform.NewTerraformProvider(etl.location, gpg)
 	return
 }
 
 func (e *Etl) Run() (err error) {
 	err = e.repo.Clone()
+	if err != nil {
+		return
+	}
+
+	err = e.terraform.GenerateTerraformJSON()
 	if err != nil {
 		return
 	}
@@ -71,9 +81,11 @@ func (e *Etl) Run() (err error) {
 	if err != nil {
 		return
 	}
+
 	err = e.repo.CommitAndPush()
 	if err != nil {
 		return
 	}
+
 	return nil
 }

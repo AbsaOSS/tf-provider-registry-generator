@@ -14,13 +14,13 @@ type ILocation interface {
 	VersionsPath() string
 	DownloadsPath() string
 	BinariesPath() string
-	GPGPubring() string
 	UrlBinaries() string
 	GetArtifacts() []Artifact
 	GetShaSumFile() string
 	GetShaSumSignatureFile() string
-	GPGFingerprint() string
 	GetVersion() string
+	TerraformJSONPath() string
+	GetConfig() config.Config
 }
 
 type Location struct {
@@ -92,10 +92,6 @@ func (p *Location) BinariesPath() string {
 	return p.root() + "/binaries"
 }
 
-func (p *Location) GPGPubring() string {
-	return p.config.GPGHome + "/pubring.gpg"
-}
-
 func (p *Location) UrlBinaries() string {
 	return "https://media.githubusercontent.com/media/" + p.config.Owner + "/" + p.config.Repository + "/" + p.config.Branch + "/binaries/"
 }
@@ -113,12 +109,16 @@ func (p *Location) GetShaSumSignatureFile() string {
 	return "terraform-provider-" + p.name + "_" + p.version + "_SHA256SUMS.sig"
 }
 
-func (p *Location) GPGFingerprint() string {
-	return p.config.GPGFingerPrint
-}
-
 func (p *Location) GetVersion() string {
 	return p.version
+}
+
+func (p *Location) TerraformJSONPath() string {
+	return p.config.Base + "/terraform.json"
+}
+
+func (p *Location) GetConfig() config.Config {
+	return p.config
 }
 
 // makes list of ArtifactsPath from files in the path

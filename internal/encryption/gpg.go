@@ -41,7 +41,7 @@ func (g *Gpg) ExtractPublicKey() (key *types.GPGPublicKey, err error) {
 	if err != nil {
 		return
 	}
-	entity := findKey(entityList, g.location.GPGFingerprint())
+	entity := findKey(entityList, g.location.GetConfig().GPGFingerPrint)
 	if entity == nil {
 		return key, fmt.Errorf("nil entity for fingerprint %s", g.location.GPGFingerprint())
 	}
