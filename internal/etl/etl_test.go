@@ -1,6 +1,8 @@
 package etl
 
 import (
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/k0da/tfreg-golang/internal/config"
 	location2 "github.com/k0da/tfreg-golang/internal/location"
@@ -8,10 +10,10 @@ import (
 	storage2 "github.com/k0da/tfreg-golang/internal/storage"
 	terraform2 "github.com/k0da/tfreg-golang/internal/terraform"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type selector int
+
 const (
 	_ selector = 1 << iota
 	location
@@ -20,7 +22,7 @@ const (
 	storage
 )
 
-func mock(t *testing.T,c config.Config, s selector) (b *Batch) {
+func mock(t *testing.T, c config.Config, s selector) (b *Batch) {
 	// get batch based on configuration
 	b, _ = NewEtlFactory(c).Get()
 	ctrl := gomock.NewController(t)
@@ -46,7 +48,6 @@ func mock(t *testing.T,c config.Config, s selector) (b *Batch) {
 	}
 	return b
 }
-
 
 func TestEtl(t *testing.T) {
 	ctrl := gomock.NewController(t)

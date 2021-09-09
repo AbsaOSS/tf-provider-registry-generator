@@ -34,10 +34,10 @@ func (m *MockIFactory) EXPECT() *MockIFactoryMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockIFactory) Get() (Batch, error) {
+func (m *MockIFactory) Get() (*Batch, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get")
-	ret0, _ := ret[0].(Batch)
+	ret0, _ := ret[0].(*Batch)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
