@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 
 	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/types"
@@ -43,6 +44,7 @@ func NewTerraformProvider(l location.ILocation) (p *TerraformProvider, err error
 func (p *TerraformProvider) GetDownloadInfo() (downloads []types.Download, err error) {
 	// todo: testurl
 	var url = p.location.UrlBinaries()
+	var keyUnquote string
 	downloads = []types.Download{}
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
@@ -55,9 +57,13 @@ func (p *TerraformProvider) GetDownloadInfo() (downloads []types.Download, err e
 		}
 		d.ShasumsSignatureURL = url + p.location.GetShaSumSignatureFile()
 		d.ShasumsURL = url + p.location.GetShaSumFile()
+		keyUnquote, err = strconv.Unquote(`"` +p.location.GetConfig().GPGArmor+`"`)
+		if err != nil {
+			return downloads, err
+		}
 		gpgPublicKey := types.GPGPublicKey{
 			KeyID:      p.location.GetConfig().GPGKeyID,
-			ASCIIArmor: p.location.GetConfig().GPGArmor,
+			ASCIIArmor: keyUnquote,
 		}
 
 		d.SigningKeys.GpgPublicKeys = append(d.SigningKeys.GpgPublicKeys, gpgPublicKey)

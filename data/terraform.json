@@ -1,4 +1,0 @@
----
-permalink: /.well-known/terraform.json
----
-{"providers.v1":"{{ site.data.root.path }}"}
