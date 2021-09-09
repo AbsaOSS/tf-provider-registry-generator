@@ -1,9 +1,9 @@
 package etl
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/k0da/tfreg-golang/internal/config"
 	"github.com/k0da/tfreg-golang/internal/location"
 	"github.com/k0da/tfreg-golang/internal/repo"
 	"github.com/k0da/tfreg-golang/internal/storage"
@@ -22,33 +22,20 @@ type Etl struct {
 }
 
 
-func NewEtl2(location location.ILocation, storage storage.IStorage, repo repo.IRepo, terraform terraform.ITerraform) (etl *Etl, err error) {
-
-	return
-}
-
-
-
-func NewEtl(c config.Config) (etl *Etl, err error) {
-	// todo: Dependency injection
-	// todo: constructor accepting particular inputs or ifactory
+func NewEtl(f IFactory) (etl *Etl, err error) {
 	etl = new(Etl)
-	etl.location, err = location.NewLocation(c)
+	if f == nil {
+		err = fmt.Errorf("nil IFactory")
+		return
+	}
+	b, err := f.Get()
 	if err != nil {
 		return
 	}
-	etl.storage, err = storage.NewStorage(etl.location)
-	if err != nil {
-		return
-	}
-	etl.repo, err = repo.NewGithub(etl.location)
-	if err != nil {
-		return
-	}
-	etl.terraform, err = terraform.NewTerraformProvider(etl.location)
-	if err != nil {
-		return
-	}
+	etl.storage = b.storage
+	etl.location = b.location
+	etl.terraform = b.terraform
+	etl.repo = b.repo
 	return
 }
 
