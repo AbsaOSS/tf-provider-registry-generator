@@ -35,6 +35,7 @@ func TestEtl(t *testing.T) {
 	f.EXPECT().Get().Return(b,nil).AnyTimes()
 	e, err := NewEtl(f)
 	require.NoError(t, err)
+
 	// act
 	err = e.Run()
 	assert.NoError(t, err)
