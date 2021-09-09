@@ -22,6 +22,10 @@ type Etl struct {
 }
 
 
+// NewEtl accepts factory which retreives valid Batch or error. The reason it accept factory instead of Batch is
+// 1. extensibility (open closed principle, SOLID)
+// 2. I don't need to make extra validations of particular Batch fields
+// 3. easier testing / mocking
 func NewEtl(f IFactory) (etl *Etl, err error) {
 	etl = new(Etl)
 	if f == nil {

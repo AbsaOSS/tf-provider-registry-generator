@@ -8,6 +8,8 @@ import (
 	"github.com/k0da/tfreg-golang/internal/terraform"
 )
 
+
+// IFactory always provides valid configuration or error
 type IFactory interface {
 	Get() (b Batch, err error)
 }
@@ -22,6 +24,8 @@ func NewEtlFactory(config config.Config) *EtlFactory {
 	}
 }
 
+// Batch ties components of ETL. The reason is not to return all components by factory or accepts all components by ETL.
+// Instead of that we use more transparent batch.
 type Batch struct {
 	location location.ILocation
 	repo repo.IRepo
