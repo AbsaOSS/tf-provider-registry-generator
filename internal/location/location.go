@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k0da/tfreg-golang/internal/config"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
 )
 
 type ILocation interface {

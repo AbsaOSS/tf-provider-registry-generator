@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/etl"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/etl"
 )
 
 func checkError(err error) {

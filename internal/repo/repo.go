@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/k0da/tfreg-golang/internal/location"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
 
 	"github.com/AbsaOSS/gopkg/shell"
 )

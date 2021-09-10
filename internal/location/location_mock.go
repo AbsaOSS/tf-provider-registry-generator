@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	config "github.com/k0da/tfreg-golang/internal/config"
+	config "github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
 )
 
 // MockILocation is a mock of ILocation interface.

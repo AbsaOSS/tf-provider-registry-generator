@@ -7,8 +7,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/k0da/tfreg-golang/internal/location"
-	"github.com/k0da/tfreg-golang/internal/types"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 )
 
 const protocolVersion = "5.2"

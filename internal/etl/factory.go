@@ -1,11 +1,11 @@
 package etl
 
 import (
-	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/location"
-	"github.com/k0da/tfreg-golang/internal/repo"
-	"github.com/k0da/tfreg-golang/internal/storage"
-	"github.com/k0da/tfreg-golang/internal/terraform"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/repo"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/terraform"
 )
 
 // IFactory always provides valid configuration or error

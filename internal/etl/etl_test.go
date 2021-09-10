@@ -4,11 +4,11 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/k0da/tfreg-golang/internal/config"
-	location2 "github.com/k0da/tfreg-golang/internal/location"
-	repo2 "github.com/k0da/tfreg-golang/internal/repo"
-	storage2 "github.com/k0da/tfreg-golang/internal/storage"
-	terraform2 "github.com/k0da/tfreg-golang/internal/terraform"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
+	location2 "github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
+	repo2 "github.com/AbsaOSS/tf-provider-registry-generator/internal/repo"
+	storage2 "github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
+	terraform2 "github.com/AbsaOSS/tf-provider-registry-generator/internal/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
