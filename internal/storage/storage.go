@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/k0da/tfreg-golang/internal/location"
-	"github.com/k0da/tfreg-golang/internal/types"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 )
 
 // Provider retrieving proper location

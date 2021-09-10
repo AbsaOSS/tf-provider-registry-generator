@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	types "github.com/k0da/tfreg-golang/internal/types"
+	types "github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 )
 
 // MockITerraform is a mock of ITerraform interface.

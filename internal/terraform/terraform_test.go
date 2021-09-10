@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/k0da/tfreg-golang/internal/config"
-	"github.com/k0da/tfreg-golang/internal/location"
-	"github.com/k0da/tfreg-golang/internal/storage"
-	"github.com/k0da/tfreg-golang/internal/types"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

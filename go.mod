@@ -1,4 +1,4 @@
-module github.com/k0da/tfreg-golang
+module github.com/AbsaOSS/tf-provider-registry-generator
 
 go 1.16
 
