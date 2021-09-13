@@ -41,21 +41,39 @@ func (g *Github) Clone() (err error) {
 func (g *Github) CommitAndPush() (err error) {
 	gitUser := []string{"config", "user.name", g.location.GetConfig().User}
 	err = runGitCmd(gitUser, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	gitEmail := []string{"config", "user.email", g.location.GetConfig().Email}
 	err = runGitCmd(gitEmail, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	gitSetRemote := []string{"remote", "set-url", "origin", g.location.GetConfig().RepoURL}
 	err = runGitCmd(gitSetRemote, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	gitAdd := []string{"add", "./"}
 	err = runGitCmd(gitAdd, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	gitCommit := []string{"commit", "-m", commitMsg}
 	err = runGitCmd(gitCommit, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	gitPush := []string{"push", "origin", g.location.GetConfig().Branch}
 	err = runGitCmd(gitPush, g.location.GetConfig().Base)
+	if err != nil {
+		return
+	}
 
 	return
 }

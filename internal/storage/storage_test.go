@@ -25,6 +25,10 @@ var defaultConfig = config.Config{
 	WebRoot:     "/",
 }
 
+func cleanup() {
+	os.RemoveAll(defaultConfig.Base + "/absaoss")
+}
+
 //func provideLocationer(t *testing.T){
 //	ctrl := gomock.NewController(t)
 //	defer ctrl.Finish()
@@ -39,6 +43,7 @@ func getDefaultPath() *location.Location {
 }
 
 func TestCreatePlatformMetadata(t *testing.T) {
+	defer cleanup()
 	// arrange
 
 	fp, err := NewStorage(getDefaultPath())
@@ -48,12 +53,4 @@ func TestCreatePlatformMetadata(t *testing.T) {
 	// assert
 	assert.NoError(t, err)
 	assert.Equal(t, defaultConfig.Base+"/absaoss/dummy/1.2.5/download/linux/amd64", path)
-}
-
-//todo: clean files
-func TestMain(m *testing.M) {
-	defer os.RemoveAll(defaultConfig.Base + "/absaoss")
-	// before
-	m.Run()
-	// cleanup
 }

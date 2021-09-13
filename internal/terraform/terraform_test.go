@@ -47,12 +47,23 @@ var greenConfig = config.Config{
 	Repository:  "terraform-provider-dummy",
 }
 
+func prepare() {
+	_ = os.Mkdir(greenConfig.Base+"/absaoss/dummy", 0755)
+	_, _ = storage.Copy(greenConfig.ArtifactDir+"/existing.json", greenConfig.Base+"/absaoss/dummy/versions")
+}
+
+func cleanup() {
+	os.RemoveAll(greenConfig.Base)
+}
+
 func getDefaultPath() *location.Location {
 	p, _ := location.NewLocation(defaultConfig)
 	return p
 }
 
 func TestNewProviderParsing(t *testing.T) {
+	defer cleanup()
+	prepare()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	m := storage.NewMockIStorage(ctrl)
@@ -67,6 +78,8 @@ func TestNewProviderParsing(t *testing.T) {
 
 // todo: test corner cases (you create corner cases with wrong data (no files, wrong file names, etc), + wrong config (invalid paths etc...))
 func TestVersionFromProvider(t *testing.T) {
+	defer cleanup()
+	prepare()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	m := storage.NewMockIStorage(ctrl)
@@ -90,6 +103,8 @@ func TestVersionFromProvider(t *testing.T) {
 
 func TestGreenPath(t *testing.T) {
 	// init
+	defer cleanup()
+	prepare()
 	location, err := location.NewLocation(greenConfig)
 	require.NoError(t, err)
 	storage, err := storage.NewStorage(location)
@@ -107,12 +122,4 @@ func TestGreenPath(t *testing.T) {
 	err = storage.WriteVersions(versions)
 	require.NoError(t, err)
 	// todo: make assertions here
-}
-
-func TestMain(m *testing.M) {
-	defer os.RemoveAll(greenConfig.Base)
-	_ = os.Mkdir(greenConfig.Base+"/absaoss/dummy", 0755)
-	_, _ = storage.Copy(greenConfig.ArtifactDir+"/existing.json", greenConfig.Base+"/absaoss/dummy/versions")
-	m.Run()
-	// todo: prepare folder test_green and clean at the end of the test
 }

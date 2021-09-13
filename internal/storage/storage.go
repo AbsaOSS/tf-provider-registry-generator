@@ -12,8 +12,7 @@ import (
 
 // Provider retrieving proper location
 type Storage struct {
-	namespace string
-	location  location.ILocation
+	location location.ILocation
 }
 
 type IStorage interface {
@@ -71,6 +70,9 @@ func (s *Storage) WriteVersions(v types.Versions) (err error) {
 		return
 	}
 	data, err := json.Marshal(v)
+	if err != nil {
+		return
+	}
 	err = os.WriteFile(s.location.VersionsPath(), data, 0644)
 	return
 }
