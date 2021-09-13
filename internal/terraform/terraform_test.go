@@ -5,11 +5,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/location"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

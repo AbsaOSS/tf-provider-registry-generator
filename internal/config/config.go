@@ -23,20 +23,23 @@ type Config struct {
 	GPGArmor    string
 }
 
+const (
+	targetDir    = "TARGET_DIR"
+	artifactsDir = "ARTIFACTS_DIR"
+	namespace    = "NAMESPACE"
+	gpgArmor     = "GPG_ASCII_ARMOR"
+	gpgKeyID     = "GPG_KEYID"
+	branch       = "BRANCH"
+	webRoot      = "WEB_ROOT"
+	ghToken      = "TOKEN"
+	repo         = "REPOSITORY"
+	user         = "USERNAME"
+	email        = "EMAIL"
+	actor        = "GITHUB_ACTOR"
+	githubRepo   = "GITHUB_REPOSITORY"
+)
+
 func NewConfig(base string) (c Config, err error) {
-	const targetDir = "TARGET_DIR"
-	const artifactsDir = "ARTIFACTS_DIR"
-	const namespace = "NAMESPACE"
-	const gpgArmor = "GPG_ASCII_ARMOR"
-	const gpgKeyID = "GPG_KEYID"
-	const branch = "BRANCH"
-	const webRoot = "WEB_ROOT"
-	const ghToken = "TOKEN"
-	const repo = "REPOSITORY"
-	const user = "USERNAME"
-	const email = "EMAIL"
-	const actor = "GITHUB_ACTOR"
-	const githubRepo = "GITHUB_REPOSITORY"
 	c = Config{}
 	// with defaults
 	c.Branch = env.GetEnvAsStringOrFallback(branch, "gh-pages")
@@ -64,7 +67,7 @@ func NewConfig(base string) (c Config, err error) {
 	c.Owner = orgRepo[0]
 	c.Repository = orgRepo[1]
 
-	targetRepo := env.GetEnvAsStringOrFallback(repo, "")
+	targetRepo := env.GetEnvAsStringOrFallback(repo, c.Repository)
 	if targetRepo == "" {
 		err = fmt.Errorf("empty %s", repo)
 		return

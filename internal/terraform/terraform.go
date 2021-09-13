@@ -57,7 +57,7 @@ func (p *TerraformProvider) GetDownloadInfo() (downloads []types.Download, err e
 		}
 		d.ShasumsSignatureURL = url + p.location.GetShaSumSignatureFile()
 		d.ShasumsURL = url + p.location.GetShaSumFile()
-		keyUnquote, err = strconv.Unquote(`"` +p.location.GetConfig().GPGArmor+`"`)
+		keyUnquote, err = strconv.Unquote(`"` + p.location.GetConfig().GPGArmor + `"`)
 		if err != nil {
 			return downloads, err
 		}

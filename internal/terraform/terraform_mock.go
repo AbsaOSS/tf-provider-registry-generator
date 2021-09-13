@@ -7,8 +7,8 @@ package terraform
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	types "github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockITerraform is a mock of ITerraform interface.

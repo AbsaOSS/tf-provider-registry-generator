@@ -7,8 +7,8 @@ package location
 import (
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	config "github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockILocation is a mock of ILocation interface.

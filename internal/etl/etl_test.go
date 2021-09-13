@@ -1,14 +1,15 @@
 package etl
 
 import (
-	"github.com/k0da/tfreg-golang/internal/storage"
-	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 
-	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
+
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/repo"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,7 +24,6 @@ var greenConfig = config.Config{
 	Repository:  "terraform-provider-dummy",
 }
 
-
 func TestEtl(t *testing.T) {
 	// arrange
 	ctrl := gomock.NewController(t)
@@ -31,10 +31,10 @@ func TestEtl(t *testing.T) {
 	rm := repo.NewMockIRepo(ctrl)
 	rm.EXPECT().Clone().Return(nil).AnyTimes()
 	rm.EXPECT().CommitAndPush().Return(nil).AnyTimes()
-	b,_ := NewEtlFactory(greenConfig).Get()
+	b, _ := NewEtlFactory(greenConfig).Get()
 	b.repo = rm
 	f := NewMockIFactory(ctrl)
-	f.EXPECT().Get().Return(b,nil).AnyTimes()
+	f.EXPECT().Get().Return(b, nil).AnyTimes()
 	e, err := NewEtl(f)
 	require.NoError(t, err)
 
@@ -46,7 +46,7 @@ func TestEtl(t *testing.T) {
 	assert.True(t, exists(greenConfig, "/terraform.json"))
 }
 
-func exists(config config.Config, subpath string) bool{
+func exists(config config.Config, subpath string) bool {
 	if _, err := os.Stat(config.Base + subpath); os.IsNotExist(err) {
 		return false
 	}

@@ -85,6 +85,5 @@ func (e *Etl) Run() (err error) {
 	log.Printf("Pushing")
 	err = e.repo.CommitAndPush()
 
-
 	return nil
 }
