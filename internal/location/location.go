@@ -37,8 +37,8 @@ type Artifact struct {
 	File    string
 }
 
-func NewLocation(c config.Config) (p *Location, err error) {
-	p = &Location{
+func NewLocation(c config.Config) (l *Location, err error) {
+	l = &Location{
 		config: c,
 	}
 	var files []os.DirEntry
@@ -46,82 +46,82 @@ func NewLocation(c config.Config) (p *Location, err error) {
 	if err != nil {
 		return
 	}
-	p.artifacts, err = p.parseArtifacts(files)
+	l.artifacts, err = l.parseArtifacts(files)
 	if err != nil {
 		return
 	}
 	var m = map[string]bool{}
-	for _, pi := range p.artifacts {
+	for _, pi := range l.artifacts {
 		m[pi.Name] = true
 	}
 	if len(m) != 1 {
-		err = fmt.Errorf("more than one provider found in %s (%v)", p.config.ArtifactDir, m)
+		err = fmt.Errorf("more than one provider found in %s (%v)", l.config.ArtifactDir, m)
 		return
 	}
-	p.name = p.artifacts[0].Name
-	p.version = p.artifacts[0].Version
+	l.name = l.artifacts[0].Name
+	l.version = l.artifacts[0].Version
 	return
 }
 
-func (p *Location) root() string {
-	return p.config.Base
+func (l *Location) root() string {
+	return l.config.Base
 }
 
-func (p *Location) providerRoot() string {
-	return p.root() + "/" + p.config.Namespace + "/" + p.name
+func (l *Location) providerRoot() string {
+	return l.root() + "/" + l.config.Namespace + "/" + l.name
 }
 
-func (p *Location) ArtifactsPath() string {
-	return p.config.ArtifactDir
+func (l *Location) ArtifactsPath() string {
+	return l.config.ArtifactDir
 }
 
-func (p *Location) TargetsPath() string {
-	return p.root() + "/" + p.config.TargetDir
+func (l *Location) TargetsPath() string {
+	return l.root() + "/" + l.config.TargetDir
 }
 
-func (p *Location) VersionsPath() string {
-	return p.providerRoot() + "/versions"
+func (l *Location) VersionsPath() string {
+	return l.providerRoot() + "/versions"
 }
 
-func (p *Location) DownloadsPath() string {
-	return p.providerRoot() + "/" + p.version + "/download"
+func (l *Location) DownloadsPath() string {
+	return l.providerRoot() + "/" + l.version + "/download"
 }
 
-func (p *Location) UrlBinaries() string {
-	return "https://github.com/" + p.config.Owner + "/" + p.config.Repository + "/releases/download/" + p.GetVersion() + "/"
+func (l *Location) UrlBinaries() string {
+	return "https://github.com/" + l.config.Owner + "/" + l.config.Repository + "/releases/download/" + l.GetVersion() + "/"
 }
 
 // GetArtifacts returns valid list of artifacts with at least one artifact
-func (p *Location) GetArtifacts() []Artifact {
-	return p.artifacts
+func (l *Location) GetArtifacts() []Artifact {
+	return l.artifacts
 }
 
-func (p *Location) GetShaSumFile() string {
-	return "terraform-provider-" + p.name + "_" + p.version + "_SHA256SUMS"
+func (l *Location) GetShaSumFile() string {
+	return "terraform-provider-" + l.name + "_" + l.version + "_SHA256SUMS"
 }
 
-func (p *Location) GetShaSumSignatureFile() string {
-	return "terraform-provider-" + p.name + "_" + p.version + "_SHA256SUMS.sig"
+func (l *Location) GetShaSumSignatureFile() string {
+	return "terraform-provider-" + l.name + "_" + l.version + "_SHA256SUMS.sig"
 }
 
-func (p *Location) GetVersion() string {
-	return p.version
+func (l *Location) GetVersion() string {
+	return l.version
 }
 
-func (p *Location) TerraformJSONPath() string {
-	return p.config.Base + "/terraform.json"
+func (l *Location) TerraformJSONPath() string {
+	return l.config.Base + "/terraform.json"
 }
 
-func (p *Location) GetConfig() config.Config {
-	return p.config
+func (l *Location) GetConfig() config.Config {
+	return l.config
 }
 
 // makes list of ArtifactsPath from files in the path
-func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
+func (l *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err error) {
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), ".zip") {
 			var pi Artifact
-			pi, err = p.getArtifactInfo(f.Name())
+			pi, err = l.getArtifactInfo(f.Name())
 			if err != nil {
 				return
 			}
@@ -132,7 +132,7 @@ func (p *Location) parseArtifacts(files []os.DirEntry) (pis []Artifact, err erro
 }
 
 // parse name from file like this: terraform-provider-dummy_1.2.5_linux_amd64.zip into artifact
-func (p *Location) getArtifactInfo(fileName string) (a Artifact, err error) {
+func (l *Location) getArtifactInfo(fileName string) (a Artifact, err error) {
 	const prefix = "terraform-provider-"
 	if !strings.HasPrefix(fileName, prefix) {
 		err = fmt.Errorf("filed to parse %s, must start with %s", fileName, prefix)
