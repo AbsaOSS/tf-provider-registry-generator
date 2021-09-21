@@ -37,3 +37,9 @@ type Platform struct {
 	Arch       string `json:"arch"`
 	FileOrigin string `json:"-"`
 }
+
+type FileAsset struct {
+	SHASig string
+	SHASum string
+	Download map[string]string
+}

@@ -14,7 +14,7 @@ import (
 const protocolVersion = "5.2"
 
 type ITerraform interface {
-	GetDownloadInfo() (downloads []types.Download, err error)
+	GetDownloadInfo(*types.FileAsset) (downloads []types.Download, err error)
 	GenerateVersion() *types.Version
 	GenerateTerraformJSON() error
 }
@@ -41,22 +41,21 @@ func NewTerraformProvider(l location.ILocation) (p *TerraformProvider, err error
 	return
 }
 
-func (p *TerraformProvider) GetDownloadInfo() (downloads []types.Download, err error) {
-	// todo: testurl
-	var url = p.location.UrlBinaries()
+func (p *TerraformProvider) GetDownloadInfo(assets *types.FileAsset) (downloads []types.Download, err error) {
 	var keyUnquote string
 	downloads = []types.Download{}
 	for _, platform := range p.Platforms {
 		d := types.Download{Os: platform.Os, Arch: platform.Arch, Filename: platform.FileOrigin}
-		d.DownloadURL = url + platform.FileOrigin
+		osArch := fmt.Sprintf("%s_%s", d.Os, d.Arch)
+		d.DownloadURL = assets.Download[osArch]
 		d.Protocols = []string{protocolVersion}
 		// todo: consider to check if files exists, don't necessarily to be on this place
 		d.Shasum, err = getSHA256(p.location.ArtifactsPath() + "/" + platform.FileOrigin)
 		if err != nil {
 			return downloads, err
 		}
-		d.ShasumsSignatureURL = url + p.location.GetShaSumSignatureFile()
-		d.ShasumsURL = url + p.location.GetShaSumFile()
+		d.ShasumsSignatureURL = assets.SHASig
+		d.ShasumsURL = assets.SHASum
 		keyUnquote, err = strconv.Unquote(`"` + p.location.GetConfig().GPGArmor + `"`)
 		if err != nil {
 			return downloads, err

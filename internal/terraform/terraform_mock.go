@@ -63,16 +63,16 @@ func (mr *MockITerraformMockRecorder) GenerateVersion() *gomock.Call {
 }
 
 // GetDownloadInfo mocks base method.
-func (m *MockITerraform) GetDownloadInfo() ([]types.Download, error) {
+func (m *MockITerraform) GetDownloadInfo(arg0 *types.FileAsset) ([]types.Download, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDownloadInfo")
+	ret := m.ctrl.Call(m, "GetDownloadInfo", arg0)
 	ret0, _ := ret[0].([]types.Download)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetDownloadInfo indicates an expected call of GetDownloadInfo.
-func (mr *MockITerraformMockRecorder) GetDownloadInfo() *gomock.Call {
+func (mr *MockITerraformMockRecorder) GetDownloadInfo(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDownloadInfo", reflect.TypeOf((*MockITerraform)(nil).GetDownloadInfo))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDownloadInfo", reflect.TypeOf((*MockITerraform)(nil).GetDownloadInfo), arg0)
 }

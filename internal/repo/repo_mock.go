@@ -7,7 +7,9 @@ package repo
 import (
 	reflect "reflect"
 
+	types "github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 	gomock "github.com/golang/mock/gomock"
+	github "github.com/google/go-github/github"
 )
 
 // MockIRepo is a mock of IRepo interface.
@@ -59,4 +61,33 @@ func (m *MockIRepo) CommitAndPush() error {
 func (mr *MockIRepoMockRecorder) CommitAndPush() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitAndPush", reflect.TypeOf((*MockIRepo)(nil).CommitAndPush))
+}
+
+// GetAssets mocks base method.
+func (m *MockIRepo) GetAssets(arg0 string, arg1 []*github.RepositoryRelease) *types.FileAsset {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAssets", arg0, arg1)
+	ret0, _ := ret[0].(*types.FileAsset)
+	return ret0
+}
+
+// GetAssets indicates an expected call of GetAssets.
+func (mr *MockIRepoMockRecorder) GetAssets(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAssets", reflect.TypeOf((*MockIRepo)(nil).GetAssets), arg0, arg1)
+}
+
+// GetReleases mocks base method.
+func (m *MockIRepo) GetReleases() ([]*github.RepositoryRelease, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetReleases")
+	ret0, _ := ret[0].([]*github.RepositoryRelease)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetReleases indicates an expected call of GetReleases.
+func (mr *MockIRepoMockRecorder) GetReleases() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReleases", reflect.TypeOf((*MockIRepo)(nil).GetReleases))
 }

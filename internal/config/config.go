@@ -21,6 +21,7 @@ type Config struct {
 	Email       string
 	GPGKeyID    string
 	GPGArmor    string
+	Token       string
 }
 
 const (
@@ -75,12 +76,12 @@ func NewConfig(base string) (c Config, err error) {
 
 	c.WebRoot = env.GetEnvAsStringOrFallback(webRoot, "/")
 	c.Namespace = env.GetEnvAsStringOrFallback(namespace, c.Owner)
-	token := env.GetEnvAsStringOrFallback(ghToken, "")
-	if token == "" {
+	c.Token = env.GetEnvAsStringOrFallback(ghToken, "")
+	if c.Token == "" {
 		err = fmt.Errorf("empty token")
 		return
 	}
-	c.RepoURL = fmt.Sprintf("https://x-access-token:%s@github.com/%s/%s", token, c.Owner, targetRepo)
+	c.RepoURL = fmt.Sprintf("https://x-access-token:%s@github.com/%s/%s", c.Token, c.Owner, targetRepo)
 	if base == "" {
 		err = fmt.Errorf("empty base")
 		return

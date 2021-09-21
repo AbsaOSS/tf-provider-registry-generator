@@ -13,7 +13,7 @@ type ILocation interface {
 	TargetsPath() string
 	VersionsPath() string
 	DownloadsPath() string
-	UrlBinaries() string
+	ProviderRoot() string
 	GetArtifacts() []Artifact
 	GetShaSumFile() string
 	GetShaSumSignatureFile() string
@@ -67,7 +67,7 @@ func (l *Location) root() string {
 	return l.config.Base
 }
 
-func (l *Location) providerRoot() string {
+func (l *Location) ProviderRoot() string {
 	return l.root() + "/" + l.config.Namespace + "/" + l.name
 }
 
@@ -80,15 +80,11 @@ func (l *Location) TargetsPath() string {
 }
 
 func (l *Location) VersionsPath() string {
-	return l.providerRoot() + "/versions"
+	return l.ProviderRoot() + "/versions"
 }
 
 func (l *Location) DownloadsPath() string {
-	return l.providerRoot() + "/" + l.version + "/download"
-}
-
-func (l *Location) UrlBinaries() string {
-	return "https://github.com/" + l.config.Owner + "/" + l.config.Repository + "/releases/download/" + l.GetVersion() + "/"
+	return l.ProviderRoot() + "/" + l.version + "/download"
 }
 
 // GetArtifacts returns valid list of artifacts with at least one artifact

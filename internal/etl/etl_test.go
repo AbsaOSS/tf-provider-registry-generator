@@ -9,6 +9,7 @@ import (
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/config"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/repo"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
+	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -29,8 +30,17 @@ func TestEtl(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	rm := repo.NewMockIRepo(ctrl)
+	asset := &types.FileAsset{
+		SHASum: "shasum",
+		SHASig: "shasig",
+		Download: map[string]string{
+			"linux_amd64": "linux_x86",
+			"linux_arm64": "linux_arm",
+		},
+	}
 	rm.EXPECT().Clone().Return(nil).AnyTimes()
 	rm.EXPECT().CommitAndPush().Return(nil).AnyTimes()
+	rm.EXPECT().GetAssets("1.2.3").Return(asset).AnyTimes()
 	b, _ := NewEtlFactory(greenConfig).Get()
 	b.repo = rm
 	f := NewMockIFactory(ctrl)

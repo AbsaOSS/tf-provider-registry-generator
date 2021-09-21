@@ -37,6 +37,7 @@ func TestSaneDefaults(t *testing.T) {
 		Branch:      "gh-pages",
 		WebRoot:     "/",
 		Base:        "pages",
+		Token:       "123",
 		Owner:       "foo",
 		Repository:  "bar",
 		RepoURL:     "https://x-access-token:123@github.com/foo/bar",

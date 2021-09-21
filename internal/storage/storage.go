@@ -73,6 +73,10 @@ func (s *Storage) WriteVersions(v types.Versions) (err error) {
 	if err != nil {
 		return
 	}
+	err = os.MkdirAll(s.location.ProviderRoot(), 0755)
+		if err != nil {
+			return
+		}
 	err = os.WriteFile(s.location.VersionsPath(), data, 0644)
 	return
 }

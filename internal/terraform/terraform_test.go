@@ -111,7 +111,15 @@ func TestGreenPath(t *testing.T) {
 	require.NoError(t, err)
 	provider, err := NewTerraformProvider(location)
 	require.NoError(t, err)
-	downloads, err := provider.GetDownloadInfo()
+	assets := &types.FileAsset{
+		SHASum: "http://foo/shasum",
+		SHASig: "http://foo/shasig",
+		Download: map[string]string{
+			"linux_amd64": "http://linux_amd",
+			"linux_arm64": "http://darwin",
+		},
+	}
+	downloads, err := provider.GetDownloadInfo(assets)
 	require.NoError(t, err)
 	_, err = storage.WritePlatformMetadata(downloads)
 	require.NoError(t, err)

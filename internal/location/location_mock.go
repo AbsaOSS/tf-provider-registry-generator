@@ -132,6 +132,20 @@ func (mr *MockILocationMockRecorder) GetVersion() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersion", reflect.TypeOf((*MockILocation)(nil).GetVersion))
 }
 
+// ProviderRoot mocks base method.
+func (m *MockILocation) ProviderRoot() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ProviderRoot")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// ProviderRoot indicates an expected call of ProviderRoot.
+func (mr *MockILocationMockRecorder) ProviderRoot() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProviderRoot", reflect.TypeOf((*MockILocation)(nil).ProviderRoot))
+}
+
 // TargetsPath mocks base method.
 func (m *MockILocation) TargetsPath() string {
 	m.ctrl.T.Helper()
@@ -158,20 +172,6 @@ func (m *MockILocation) TerraformJSONPath() string {
 func (mr *MockILocationMockRecorder) TerraformJSONPath() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerraformJSONPath", reflect.TypeOf((*MockILocation)(nil).TerraformJSONPath))
-}
-
-// UrlBinaries mocks base method.
-func (m *MockILocation) UrlBinaries() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UrlBinaries")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// UrlBinaries indicates an expected call of UrlBinaries.
-func (mr *MockILocationMockRecorder) UrlBinaries() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UrlBinaries", reflect.TypeOf((*MockILocation)(nil).UrlBinaries))
 }
 
 // VersionsPath mocks base method.
