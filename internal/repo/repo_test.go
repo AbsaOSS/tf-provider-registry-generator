@@ -62,3 +62,22 @@ func TestGetAssets(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, expFileAsset, got, "expected %s, but got: %s", expFileAsset, got)
 }
+
+func TestFailGetAssets(t *testing.T) {
+	c := config.Config{
+		ArtifactDir: "../../test_data/source",
+	}
+	l, err := location.NewLocation(c)
+	require.NoError(t, err)
+	g := &Github{
+		location: l,
+	}
+	assets := []github.ReleaseAsset{
+	}
+	releases := []*github.RepositoryRelease{{
+		TagName: github.String("v1.2.5"),
+		Assets:  assets,
+	}}
+	_, err = g.GetAssets("1.2.5", releases)
+	assert.Error(t, err)
+}

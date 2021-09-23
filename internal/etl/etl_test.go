@@ -10,6 +10,7 @@ import (
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/repo"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/storage"
 	"github.com/AbsaOSS/tf-provider-registry-generator/internal/types"
+	"github.com/google/go-github/github"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -38,9 +39,14 @@ func TestEtl(t *testing.T) {
 			"linux_arm64": "linux_arm",
 		},
 	}
+	ghRelease := []*github.RepositoryRelease{{
+		TagName: github.String("v1.2.5"),
+		Assets: []github.ReleaseAsset{},
+	},}
 	rm.EXPECT().Clone().Return(nil).AnyTimes()
 	rm.EXPECT().CommitAndPush().Return(nil).AnyTimes()
-	rm.EXPECT().GetAssets("1.2.3").Return(asset).AnyTimes()
+	rm.EXPECT().GetReleases().Return(ghRelease, nil).AnyTimes()
+	rm.EXPECT().GetAssets("1.2.5",ghRelease).Return(asset, nil).AnyTimes()
 	b, _ := NewEtlFactory(greenConfig).Get()
 	b.repo = rm
 	f := NewMockIFactory(ctrl)
