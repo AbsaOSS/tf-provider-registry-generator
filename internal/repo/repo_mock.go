@@ -64,11 +64,12 @@ func (mr *MockIRepoMockRecorder) CommitAndPush() *gomock.Call {
 }
 
 // GetAssets mocks base method.
-func (m *MockIRepo) GetAssets(arg0 string, arg1 []*github.RepositoryRelease) *types.FileAsset {
+func (m *MockIRepo) GetAssets(arg0 string, arg1 []*github.RepositoryRelease) (*types.FileAsset, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAssets", arg0, arg1)
 	ret0, _ := ret[0].(*types.FileAsset)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetAssets indicates an expected call of GetAssets.
